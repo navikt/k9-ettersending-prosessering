@@ -1,0 +1,112 @@
+{
+  "topics": [
+    {
+      "configEntries": {
+        "retention.ms": -1
+      },
+      "members": [
+        {
+          "member": "srvk9ettersend-mtk",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvk9ettersend-prs",
+          "role": "CONSUMER"
+        },
+        {
+          "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
+          "role": "MANAGER"
+        }
+      ],
+      "numPartitions": 3,
+      "topicName": "privat-k9-ettersending-mottatt"
+    },
+    {
+      "configEntries": {
+        "retention.ms": -1
+      },
+      "members": [
+        {
+          "member": "srvk9ettersend-prs",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvk9ettersend-prs",
+          "role": "CONSUMER"
+        },
+        {
+          "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
+          "role": "MANAGER"
+        }
+      ],
+      "numPartitions": 3,
+      "topicName": "privat-k9-ettersending-preprossesert"
+    },
+    {
+      "configEntries": {
+        "retention.ms": -1
+      },
+      "members": [
+        {
+          "member": "srvk9ettersend-prs",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvk9ettersend-prs",
+          "role": "CONSUMER"
+        },
+        {
+          "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
+          "role": "MANAGER"
+        }
+      ],
+      "numPartitions": 3,
+      "topicName": "privat-k9-ettersending-cleanup"
+    },
+    {
+      "configEntries": {
+        "retention.ms": -1
+      },
+      "members": [
+        {
+          "member": "srvk9ettersend-prs",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvomsorgspeng-prs",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvpps-prosessering",
+          "role": "PRODUCER"
+        },
+        {
+          "member": "srvk9-fordel",
+          "role": "CONSUMER"
+        },
+        {
+          "member": "E157419",
+          "role": "MANAGER"
+        },
+        {
+          "member": "F154868",
+          "role": "MANAGER"
+        }
+      ],
+      "numPartitions": 3,
+      "topicName": "privat-k9-digital-ettersendelse-journalfort"
+    }
+  ]
+}

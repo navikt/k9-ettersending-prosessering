@@ -1,7 +1,5 @@
 package no.nav.helse.prosessering.v1.felles
 
-import no.nav.helse.aktoer.AktørId
-
 data class PreprossesertSøker(
     val fødselsnummer: String,
     val fornavn: String,

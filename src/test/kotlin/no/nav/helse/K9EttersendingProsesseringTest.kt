@@ -49,7 +49,6 @@ class K9EttersendingProsesseringTest {
             .stubJournalfor()
             .stubLagreDokument()
             .stubSlettDokument()
-            .stubAktørRegister("29099012345", "123456")
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestProducerEttersending = kafkaEnvironment.meldingEttersendingProducer()
@@ -92,8 +91,6 @@ class K9EttersendingProsesseringTest {
         @BeforeClass
         @JvmStatic
         fun buildUp() {
-            wireMockServer.stubAktørRegister(gyldigFodselsnummerA, "666666666")
-            wireMockServer.stubAktørRegister(gyldigFodselsnummerB, "777777777")
         }
 
         @AfterClass

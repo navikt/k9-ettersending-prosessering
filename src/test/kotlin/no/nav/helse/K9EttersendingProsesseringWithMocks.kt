@@ -25,7 +25,6 @@ class K9EttersendingProsesseringWithMocks {
                 .stubJournalfor()
                 .stubLagreDokument()
                 .stubSlettDokument()
-                .stubAktørRegister("29099012345", "123456")
 
             val kafkaEnvironment = KafkaWrapper.bootstrap()
 

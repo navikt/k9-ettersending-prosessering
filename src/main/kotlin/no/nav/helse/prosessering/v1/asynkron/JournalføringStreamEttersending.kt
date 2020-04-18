@@ -1,13 +1,13 @@
 package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.aktoer.AktørId
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
+import no.nav.helse.prosessering.v1.felles.AktørId
 import no.nav.helse.tilK9Søker
 import no.nav.k9.ettersendelse.Ettersendelse
 import no.nav.k9.ettersendelse.Ytelse

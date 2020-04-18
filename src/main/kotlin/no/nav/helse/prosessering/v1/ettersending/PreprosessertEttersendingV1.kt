@@ -1,6 +1,6 @@
 package no.nav.helse.prosessering.v1.ettersending
 
-import no.nav.helse.aktoer.AktørId
+import no.nav.helse.prosessering.v1.felles.AktørId
 import no.nav.helse.prosessering.v1.felles.PreprossesertSøker
 import java.net.URI
 import java.time.ZonedDateTime

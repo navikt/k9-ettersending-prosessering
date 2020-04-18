@@ -124,9 +124,10 @@ class K9EttersendingProsesseringTest {
 
     @Test
     fun`Gyldig ettersending blir prosessert av journalføringkonsumer`(){
-        val søknad = gyldigMeldingEttersending(
-            fødselsnummerSoker = gyldigFodselsnummerA,
-            sprak = "nb"
+        val søknad = EttersendingUtils.defaultEttersending.copy(
+            søker = EttersendingUtils.defaultEttersending.søker.copy(
+                fødselsnummer = gyldigFodselsnummerA
+            )
         )
 
         kafkaTestProducerEttersending.leggTilMottak(søknad)
@@ -134,28 +135,4 @@ class K9EttersendingProsesseringTest {
             .hentJournalførtMeldingEttersending(søknad.søknadId)
             .assertEttersendeFormat()
     }
-
-    private fun gyldigMeldingEttersending(
-        fødselsnummerSoker: String,
-        sprak: String,
-        vedleggUrl: URI = URI("${wireMockServer.getK9DokumentBaseUrl()}/v1/dokument/${UUID.randomUUID()}")
-    ) : EttersendingV1 = EttersendingV1(
-        språk = sprak,
-        søknadId = UUID.randomUUID().toString(),
-        mottatt = ZonedDateTime.now(),
-        søker = Søker(
-            aktørId = "123456",
-            fødselsnummer = fødselsnummerSoker,
-            fødselsdato = LocalDate.now().minusDays(1000),
-            etternavn = "Nordmann",
-            mellomnavn = "Mellomnavn",
-            fornavn = "Ola"
-        ),
-        harBekreftetOpplysninger = true,
-        harForståttRettigheterOgPlikter = true,
-        beskrivelse = "Blablabla",
-        søknadstype = "omsorgspenger",
-        vedleggUrls = listOf(vedleggUrl),
-        titler = listOf("Tittel")
-    )
 }

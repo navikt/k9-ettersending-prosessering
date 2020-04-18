@@ -2,11 +2,13 @@ package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.joark.JoarkGateway
+import no.nav.helse.joark.Navn
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
+import no.nav.helse.prosessering.v1.ettersending.SøknadsType
 import no.nav.helse.prosessering.v1.felles.AktørId
 import no.nav.helse.tilK9Søker
 import no.nav.k9.ettersendelse.Ettersendelse
@@ -58,8 +60,14 @@ internal class JournalføringStreamEttersending(
                             mottatt = entry.data.mottatt,
                             aktørId = AktørId(entry.data.søker.aktørId),
                             norskIdent = entry.data.søker.fødselsnummer,
+                            søkerNavn = Navn(
+                                fornavn = entry.data.søker.fornavn,
+                                mellomnavn = entry.data.søker.mellomnavn,
+                                etternavn = entry.data.søker.etternavn
+                            ),
                             correlationId = CorrelationId(entry.metadata.correlationId),
-                            dokumenter = dokumenter
+                            dokumenter = dokumenter,
+                            søknadstype = entry.data.søknadstype
                         )
                         logger.info("Dokumenter journalført med ID = ${journaPostId.journalpostId}.")
                         val journalfort = JournalfortEttersending(
@@ -85,5 +93,10 @@ internal class JournalføringStreamEttersending(
 private fun PreprosessertEttersendingV1.tilK9Ettersendelse(): Ettersendelse = Ettersendelse.builder()
     .mottattDato(mottatt)
     .søker(søker.tilK9Søker())
-    .ytelse(Ytelse.OMSORGSPENGER) // TODO: Dynamisk søknadstype
+    .ytelse(tilK9Ytelse())
     .build()
+
+private fun PreprosessertEttersendingV1.tilK9Ytelse() = when(søknadstype) {
+    SøknadsType.PLEIEPENGER -> Ytelse.PLEIEPENGER_SYKT_BARN
+    SøknadsType.OMSORGSPENGER -> Ytelse.OMSORGSPENGER
+}

@@ -52,7 +52,7 @@ internal class PreprosseseringV1Service(
             melding = melding,
             aktørId = søkerAktørId,
             correlationId = correlationId,
-            søknadstype = "omsorgspenger" // TODO: dynamisk søknadstype
+            søknadstype = melding.søknadstype.type
         )
         logger.info("Mellomlagrer Oppsummerings-JSON OK.")
 

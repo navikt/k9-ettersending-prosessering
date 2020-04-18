@@ -14,7 +14,7 @@ data class PreprosessertEttersendingV1(
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
     val beskrivelse: String,
-    val søknadstype: String,
+    val søknadstype: SøknadsType,
     val titler: List<String>
     ) {
     internal constructor(

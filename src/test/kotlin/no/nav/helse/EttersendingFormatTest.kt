@@ -2,6 +2,7 @@ package no.nav.helse
 
 import no.nav.helse.dokument.Søknadsformat
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
+import no.nav.helse.prosessering.v1.ettersending.SøknadsType
 import no.nav.helse.prosessering.v1.felles.Søker
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
@@ -37,7 +38,7 @@ class EttersendingFormatTest{
                   "harForståttRettigheterOgPlikter": true,
                   "harBekreftetOpplysninger": true,
                   "beskrivelse": "Blablabla beskrivelse",
-                  "søknadstype": "Omsorgspenger",
+                  "søknadstype": "omsorgspenger",
                   "titler": [
                     "vedlegg1"
                   ]
@@ -46,7 +47,7 @@ class EttersendingFormatTest{
         )
     }
 
-    private fun melding(soknadId: String): EttersendingV1 = EttersendingV1(
+    private fun melding(soknadId: String): EttersendingV1 = EttersendingUtils.defaultEttersending.copy(
         søknadId = soknadId,
         mottatt = ZonedDateTime.of(2018, 1, 2, 3, 4, 5, 6, ZoneId.of("UTC")),
         søker = Søker(
@@ -60,8 +61,8 @@ class EttersendingFormatTest{
         harBekreftetOpplysninger = true,
         harForståttRettigheterOgPlikter = true,
         beskrivelse = "Blablabla beskrivelse",
-        søknadstype = "Omsorgspenger",
+        søknadstype = SøknadsType.OMSORGSPENGER,
         vedleggUrls = listOf(URI("http://localhost.com/vedlegg1")),
         titler = listOf("vedlegg1")
-        )
+    )
 }

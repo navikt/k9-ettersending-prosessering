@@ -1,5 +1,6 @@
 package no.nav.helse
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.application.Application
@@ -122,3 +123,7 @@ fun Application.k9EttersendingProsessering() {
 }
 
 private fun Url.Companion.healthURL(baseUrl: URI) = Url.buildURL(baseUrl = baseUrl, pathParts = listOf("health"))
+
+internal fun ObjectMapper.k9EttersendingKonfigurert() = dusseldorfConfigured()
+    .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
+    .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)

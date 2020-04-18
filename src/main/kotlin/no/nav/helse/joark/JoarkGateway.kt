@@ -20,6 +20,9 @@ import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
+import no.nav.helse.prosessering.v1.ettersending.SøknadsType
+import no.nav.helse.prosessering.v1.ettersending.SøknadsType.OMSORGSPENGER
+import no.nav.helse.prosessering.v1.ettersending.SøknadsType.PLEIEPENGER
 import no.nav.helse.prosessering.v1.felles.AktørId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -42,7 +45,10 @@ class JoarkGateway(
         pathParts = listOf("v1", "omsorgspenge", "journalforing")
     ).toString()
 
-    // TODO: Url for pleiepenge
+    private val journalførPleiepengerUrl = Url.buildURL(
+        baseUrl = baseUrl,
+        pathParts = listOf("v1", "pleiepenge", "journalforing")
+    ).toString()
 
     private val objectMapper = configuredObjectMapper()
     private val cachedAccessTokenClient = CachedAccessTokenClient(accessTokenClient)
@@ -61,9 +67,11 @@ class JoarkGateway(
     suspend fun journalførEttersending(
         aktørId: AktørId,
         norskIdent: String,
+        søkerNavn: Navn,
         mottatt: ZonedDateTime,
         dokumenter: List<List<URI>>,
-        correlationId: CorrelationId
+        correlationId: CorrelationId,
+        søknadstype: SøknadsType
     ): JournalPostId {
 
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
@@ -72,21 +80,33 @@ class JoarkGateway(
             aktoerId = aktørId.id,
             norskIdent = norskIdent,
             mottatt = mottatt,
+            søkerNavn = søkerNavn,
             dokumenter = dokumenter
         )
 
         val body = objectMapper.writeValueAsBytes(joarkRequest)
         val contentStream = { ByteArrayInputStream(body) }
 
-        val httpRequest = journalførOmsorgspengerUrl
-            .httpPost()
-            .body(contentStream)
-            .header(
-                HttpHeaders.XCorrelationId to correlationId.value,
-                HttpHeaders.Authorization to authorizationHeader,
-                HttpHeaders.ContentType to "application/json",
-                HttpHeaders.Accept to "application/json"
-            )
+        val httpRequest = when (søknadstype) {
+            OMSORGSPENGER -> journalførOmsorgspengerUrl
+                .httpPost()
+                .body(contentStream)
+                .header(
+                    HttpHeaders.XCorrelationId to correlationId.value,
+                    HttpHeaders.Authorization to authorizationHeader,
+                    HttpHeaders.ContentType to "application/json",
+                    HttpHeaders.Accept to "application/json"
+                )
+            PLEIEPENGER ->  journalførPleiepengerUrl
+                .httpPost()
+                .body(contentStream)
+                .header(
+                    HttpHeaders.XCorrelationId to correlationId.value,
+                    HttpHeaders.Authorization to authorizationHeader,
+                    HttpHeaders.ContentType to "application/json",
+                    HttpHeaders.Accept to "application/json"
+                )
+        }
 
         val (request, response, result) = Operation.monitored(
             app = "k9-ettersending-prosessering",
@@ -117,7 +137,14 @@ private data class JoarkRequest(
     @JsonProperty("aktoer_id") val aktoerId: String,
     @JsonProperty("norsk_ident") val norskIdent: String,
     val mottatt: ZonedDateTime,
+    @JsonProperty("soker_navn") val søkerNavn: Navn,
     val dokumenter: List<List<URI>>
+)
+
+data class Navn(
+    val fornavn: String,
+    val mellomnavn: String? = null,
+    val etternavn: String
 )
 
 data class JournalPostId(@JsonProperty("journal_post_id") val journalpostId: String)

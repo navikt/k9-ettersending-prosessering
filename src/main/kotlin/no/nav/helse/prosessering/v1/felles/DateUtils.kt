@@ -1,4 +1,4 @@
-package no.nav.helse.prosessering.v1
+package no.nav.helse.prosessering.v1.felles
 
 import java.time.DayOfWeek.*
 import java.time.LocalDate
@@ -9,7 +9,11 @@ object DateUtils {
 
     internal fun antallVirkedager(fraOgMed: LocalDate, tilOgMed: LocalDate) : Long {
         val dager = ChronoUnit.DAYS.between(fraOgMed, tilOgMed) + 1
-        val lordagerOgSondager = antallLordagerOgSondagerIPerioden(fraOgMed, tilOgMed)
+        val lordagerOgSondager =
+            antallLordagerOgSondagerIPerioden(
+                fraOgMed,
+                tilOgMed
+            )
         return dager - lordagerOgSondager
     }
 

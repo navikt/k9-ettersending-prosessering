@@ -2,7 +2,7 @@ package no.nav.helse
 
 import no.nav.common.JAASCredential
 import no.nav.common.KafkaEnvironment
-import no.nav.helse.prosessering.Metadata
+import no.nav.helse.prosessering.v1.felles.Metadata
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP_ETTERSENDING
 import no.nav.helse.prosessering.v1.asynkron.Topics.JOURNALFORT_ETTERSENDING

@@ -2,8 +2,8 @@ package no.nav.helse.prosessering.v1
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.dokument.DokumentService
-import no.nav.helse.prosessering.Metadata
-import no.nav.helse.prosessering.SoknadId
+import no.nav.helse.prosessering.v1.felles.Metadata
+import no.nav.helse.prosessering.v1.felles.SoknadId
 import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.reportMetrics

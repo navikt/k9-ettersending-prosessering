@@ -1,5 +1,6 @@
 # K9 Ettersending Prosessering
 ![CI / CD](https://github.com/navikt/k9-ettersending-prosessering/workflows/CI%20/%20CD/badge.svg)
+![NAIS Alerts](https://github.com/navikt/k9-ettersending-prosessering/workflows/Alerts/badge.svg)
 
 Tjeneste som prosesserer melding om ettersending for omsorgspenger og pleiepenger.
 Leser meldinger fra Kafka topic `privat-k9-ettersending-mottatt` som legges der av [k9-ettersending-mottak](https://github.com/navikt/k9-ettersending-mottak)

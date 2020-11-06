@@ -2,6 +2,7 @@ package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.dokument.DokumentService
+import no.nav.helse.erEtter
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
@@ -12,16 +13,19 @@ import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
 import org.apache.kafka.streams.kstream.Produced
 import org.slf4j.LoggerFactory
+import java.time.ZonedDateTime
 
 internal class CleanupStreamEttersending(
     kafkaConfig: KafkaConfig,
-    dokumentService: DokumentService
+    dokumentService: DokumentService,
+    datoMottattEtter: ZonedDateTime
 ) {
     private val stream = ManagedKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
         topology = topology(
-            dokumentService
+            dokumentService,
+            datoMottattEtter
         ),
         unreadyAfterStreamStoppedIn = kafkaConfig.unreadyAfterStreamStoppedIn
     )
@@ -33,7 +37,7 @@ internal class CleanupStreamEttersending(
         private const val NAME = "CleanupV1Ettersending"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
-        private fun topology(dokumentService: DokumentService): Topology {
+        private fun topology(dokumentService: DokumentService, gittDato: ZonedDateTime): Topology {
             val builder = StreamsBuilder()
             val fraCleanup: Topic<TopicEntry<CleanupEttersending>> = Topics.CLEANUP_ETTERSENDING
             val tilJournalfort: Topic<TopicEntry<JournalfortEttersending>> = Topics.JOURNALFORT_ETTERSENDING
@@ -42,6 +46,7 @@ internal class CleanupStreamEttersending(
                 .stream<String, TopicEntry<CleanupEttersending>>(
                     fraCleanup.name, Consumed.with(fraCleanup.keySerde, fraCleanup.valueSerde)
                 )
+                .filter { _, entry -> entry.data.melding.mottatt.erEtter(gittDato) }
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {

@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1.asynkron
 
+import no.nav.helse.erEtter
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
@@ -11,16 +12,19 @@ import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
 import org.apache.kafka.streams.kstream.Produced
 import org.slf4j.LoggerFactory
+import java.time.ZonedDateTime
 
 internal class PreprosseseringStreamEttersending(
     preprosseseringV1Service: PreprosseseringV1Service,
-    kafkaConfig: KafkaConfig
+    kafkaConfig: KafkaConfig,
+    datoMottattEtter: ZonedDateTime
 ) {
     private val stream = ManagedKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
         topology = topology(
-            preprosseseringV1Service
+            preprosseseringV1Service,
+            datoMottattEtter
         ),
         unreadyAfterStreamStoppedIn = kafkaConfig.unreadyAfterStreamStoppedIn
     )
@@ -33,7 +37,7 @@ internal class PreprosseseringStreamEttersending(
         private const val NAME = "PreprosesseringV1Ettersending"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
-        private fun topology(preprosseseringV1Service: PreprosseseringV1Service): Topology {
+        private fun topology(preprosseseringV1Service: PreprosseseringV1Service, gittDato: ZonedDateTime): Topology {
             val builder = StreamsBuilder()
             val fromMottatt = Topics.MOTTATT_ETTERSENDING
             val tilPreprossesert = Topics.PREPROSSESERT_ETTERSENDING
@@ -43,6 +47,7 @@ internal class PreprosseseringStreamEttersending(
                     fromMottatt.name,
                     Consumed.with(fromMottatt.keySerde, fromMottatt.valueSerde)
                 )
+                .filter { _, entry -> entry.data.mottatt.erEtter(gittDato) }
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {

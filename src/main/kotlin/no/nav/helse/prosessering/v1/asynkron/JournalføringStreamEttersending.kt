@@ -1,6 +1,7 @@
 package no.nav.helse.prosessering.v1.asynkron
 
 import no.nav.helse.CorrelationId
+import no.nav.helse.erEtter
 import no.nav.helse.joark.JoarkGateway
 import no.nav.helse.joark.Navn
 import no.nav.helse.kafka.KafkaConfig
@@ -18,17 +19,20 @@ import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
 import org.apache.kafka.streams.kstream.Produced
 import org.slf4j.LoggerFactory
+import java.time.ZonedDateTime
 
 internal class JournalføringStreamEttersending(
     joarkGateway: JoarkGateway,
-    kafkaConfig: KafkaConfig
+    kafkaConfig: KafkaConfig,
+    datoMottattEtter: ZonedDateTime
 ) {
 
     private val stream = ManagedKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
         topology = topology(
-            joarkGateway
+            joarkGateway,
+            datoMottattEtter
         ),
         unreadyAfterStreamStoppedIn = kafkaConfig.unreadyAfterStreamStoppedIn
     )
@@ -39,8 +43,9 @@ internal class JournalføringStreamEttersending(
     private companion object {
         private const val NAME = "JournalforingV1Ettersending"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
+        private val erJournalført = mutableListOf<String>()
 
-        private fun topology(joarkGateway: JoarkGateway): Topology {
+        private fun topology(joarkGateway: JoarkGateway, gittDato: ZonedDateTime): Topology {
             val builder = StreamsBuilder()
             val fraPreprossesertV1: Topic<TopicEntry<PreprosessertEttersendingV1>> = Topics.PREPROSSESERT_ETTERSENDING
             val tilCleanup: Topic<TopicEntry<CleanupEttersending>> = Topics.CLEANUP_ETTERSENDING
@@ -50,6 +55,7 @@ internal class JournalføringStreamEttersending(
                     fraPreprossesertV1.name,
                     Consumed.with(fraPreprossesertV1.keySerde, fraPreprossesertV1.valueSerde)
                 )
+                .filter { _, entry -> entry.data.mottatt.erEtter(gittDato) }
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
@@ -74,6 +80,9 @@ internal class JournalføringStreamEttersending(
                             journalpostId = journaPostId.journalpostId,
                             søknad = entry.data.tilK9Ettersendelse()
                         )
+
+                        erJournalført.add(entry.metadata.correlationId)
+
                         CleanupEttersending(
                             metadata = entry.metadata,
                             melding = entry.data,

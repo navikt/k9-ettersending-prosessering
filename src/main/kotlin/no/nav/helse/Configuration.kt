@@ -30,6 +30,14 @@ data class Configuration(private val config: ApplicationConfig) {
                 }
             }
 
+            val autoOffsetReset = when(val offsetReset = config.getOptionalString(key = "nav.kafka.auto_offset_reset", secret = false)?.toLowerCase()) {
+                null -> "none"
+                "none" -> offsetReset
+                "latest" -> offsetReset
+                "earliest" -> offsetReset
+                else -> throw IllegalArgumentException("Ugyldig verdi for nav.kafka.auto_offset_reset: $offsetReset")
+            }
+
             KafkaConfig(
                 bootstrapServers = bootstrapServers,
                 credentials = Pair(
@@ -38,6 +46,7 @@ data class Configuration(private val config: ApplicationConfig) {
                 ),
                 trustStore = trustStore,
                 exactlyOnce = trustStore != null,
+                autoOffsetReset = autoOffsetReset,
                 unreadyAfterStreamStoppedIn = unreadyAfterStreamStoppedIn()
             )
         }

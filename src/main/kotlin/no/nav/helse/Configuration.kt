@@ -24,6 +24,8 @@ data class Configuration(private val config: ApplicationConfig) {
     )
 
     internal fun soknadDatoMottattEtter() = ZonedDateTime.parse(config.getRequiredString("nav.prosesser_soknader_mottatt_etter", secret = false))
+    internal fun journalførMeldingDatoMottattEtter() = ZonedDateTime.parse(config.getRequiredString("nav.journalfor_meldinger_mottatt_etter", secret = false))
+    internal fun cleanupMeldingDatoMottattEtter() = ZonedDateTime.parse(config.getRequiredString("nav.cleanup_meldinger_mottatt_etter", secret = false))
 
     internal fun getKafkaConfig() =
         config.getRequiredString("nav.kafka.bootstrap_servers", secret = false).let { bootstrapServers ->

@@ -83,7 +83,9 @@ fun Application.k9EttersendingProsessering() {
         preprosseseringV1Service = preprosseseringV1Service,
         joarkGateway = joarkGateway,
         dokumentService = dokumentService,
-        datoMottattEtter = configuration.soknadDatoMottattEtter()
+        preprosesserMeldingerMottattEtter = configuration.soknadDatoMottattEtter(),
+        cleanupMeldingDatoMottattEtter = configuration.cleanupMeldingDatoMottattEtter(),
+        journalførMeldingDatoMottattEtter = configuration.journalførMeldingDatoMottattEtter()
     )
 
     environment.monitor.subscribe(ApplicationStopping) {

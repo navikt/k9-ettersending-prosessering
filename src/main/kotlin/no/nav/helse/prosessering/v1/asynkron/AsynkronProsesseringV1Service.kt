@@ -12,7 +12,9 @@ internal class AsynkronProsesseringV1Service(
     preprosseseringV1Service: PreprosseseringV1Service,
     joarkGateway: JoarkGateway,
     dokumentService: DokumentService,
-    datoMottattEtter: ZonedDateTime
+    preprosesserMeldingerMottattEtter: ZonedDateTime,
+    cleanupMeldingDatoMottattEtter: ZonedDateTime,
+    journalførMeldingDatoMottattEtter: ZonedDateTime
 ) {
 
     private companion object {
@@ -23,21 +25,21 @@ internal class AsynkronProsesseringV1Service(
         PreprosseseringStreamEttersending(
             kafkaConfig = kafkaConfig,
             preprosseseringV1Service = preprosseseringV1Service,
-            datoMottattEtter = datoMottattEtter
+            datoMottattEtter = preprosesserMeldingerMottattEtter
         )
 
     private val journalforingsStreamEttersending =
         JournalføringStreamEttersending(
             kafkaConfig = kafkaConfig,
             joarkGateway = joarkGateway,
-            datoMottattEtter = datoMottattEtter
+            datoMottattEtter = journalførMeldingDatoMottattEtter
         )
 
     private val cleanupStreamEttersending =
         CleanupStreamEttersending(
             kafkaConfig = kafkaConfig,
             dokumentService = dokumentService,
-            datoMottattEtter = datoMottattEtter
+            datoMottattEtter = cleanupMeldingDatoMottattEtter
         )
 
     private val healthChecks = setOf(

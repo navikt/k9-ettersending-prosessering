@@ -42,12 +42,12 @@ class JoarkGateway(
 
     private val journalførOmsorgspengerUrl = Url.buildURL(
         baseUrl = baseUrl,
-        pathParts = listOf("v1", "omsorgspenge", "journalforing")
+        pathParts = listOf("v1", "omsorgspenge", "ettersending", "journalforing")
     ).toString()
 
     private val journalførPleiepengerUrl = Url.buildURL(
         baseUrl = baseUrl,
-        pathParts = listOf("v1", "pleiepenge", "journalforing")
+        pathParts = listOf("v1", "pleiepenge", "ettersending", "journalforing")
     ).toString()
 
     private val objectMapper = configuredObjectMapper()

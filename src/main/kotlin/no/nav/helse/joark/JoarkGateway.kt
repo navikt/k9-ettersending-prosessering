@@ -106,19 +106,11 @@ class JoarkGateway(
 
         val httpRequest = when (søknadstype) {
             OMP_UTV_KS -> journalførOmsorgspengerUrl
-                .httpPost()
-                .body(contentStream)
-                .header(
-                    HttpHeaders.XCorrelationId to correlationId.value,
-                    HttpHeaders.Authorization to authorizationHeader,
-                    HttpHeaders.ContentType to "application/json",
-                    HttpHeaders.Accept to "application/json"
-                )
-            PLEIEPENGER_SYKT_BARN ->  journalførPleiepengerUrl.byggHttpPost(contentStream, correlationId, authorizationHeader)
-            OMP_UT_ARBEIDSTAKER -> journalførOmsorgspengeUtbetalingArbeidstakerUrl.byggHttpPost(contentStream, correlationId, authorizationHeader)
-            OMP_UT_SNF -> journalførOmsorgspengeUtbetalingSNFUrl.byggHttpPost(contentStream, correlationId, authorizationHeader)
-            OMP_UTV_MA -> journalførOmsorgspengerMidlertidigAleneUrl.byggHttpPost(contentStream, correlationId, authorizationHeader)
-        }
+            PLEIEPENGER_SYKT_BARN ->  journalførPleiepengerUrl
+            OMP_UT_ARBEIDSTAKER -> journalførOmsorgspengeUtbetalingArbeidstakerUrl
+            OMP_UT_SNF -> journalførOmsorgspengeUtbetalingSNFUrl
+            OMP_UTV_MA -> journalførOmsorgspengerMidlertidigAleneUrl
+        }.byggHttpPost(contentStream, correlationId, authorizationHeader)
 
         val (request, response, result) = Operation.monitored(
             app = "k9-ettersending-prosessering",

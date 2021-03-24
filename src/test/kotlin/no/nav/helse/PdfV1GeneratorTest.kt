@@ -30,15 +30,23 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "3-full-ettersending-omsorgspenger-utbetalin"
+        id = "3-full-ettersending-omsorgspenger-utbetaling-snf"
         pdf = generator.generateSoknadOppsummeringPdfEttersending(
             melding = EttersendingUtils.defaultEttersending.copy(
-                søknadstype = Søknadstype.OMP_UT
+                søknadstype = Søknadstype.OMP_UT_SNF
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
-        id = "4-full-ettersending-omsorgspenger-midlertidig-alene"
+        id = "4-full-ettersending-omsorgspenger-utbetaling-arbeidstaker"
+        pdf = generator.generateSoknadOppsummeringPdfEttersending(
+            melding = EttersendingUtils.defaultEttersending.copy(
+                søknadstype = Søknadstype.OMP_UT_ARBEIDSTAKER
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "5-full-ettersending-omsorgspenger-midlertidig-alene"
         pdf = generator.generateSoknadOppsummeringPdfEttersending(
             melding = EttersendingUtils.defaultEttersending.copy(
                 søknadstype = Søknadstype.OMP_UTV_MA

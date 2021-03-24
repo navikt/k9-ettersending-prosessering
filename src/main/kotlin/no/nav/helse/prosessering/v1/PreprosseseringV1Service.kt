@@ -9,6 +9,7 @@ import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.ettersending.reportMetrics
 import no.nav.helse.prosessering.v1.felles.AktørId
+import no.nav.k9.ettersendelse.Ettersendelse
 import org.slf4j.LoggerFactory
 
 internal class PreprosseseringV1Service(
@@ -47,6 +48,7 @@ internal class PreprosseseringV1Service(
 
         logger.info("Mellomlagrer Oppsummerings-JSON")
 
+        logger.info("K9Format som lagres: ${Ettersendelse.SerDes.serialize(melding.k9Format)}") //TODO 24.03.2021 - Fjernes før prodsetting
         val soknadJsonUrl = dokumentService.lagreSoknadsMeldingEttersending(
             k9Format = melding.k9Format,
             aktørId = søkerAktørId,

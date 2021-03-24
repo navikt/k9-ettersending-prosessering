@@ -17,7 +17,7 @@ data class PreprosessertEttersendingV1(
     val beskrivelse: String,
     val søknadstype: Søknadstype,
     val titler: List<String>,
-    val k9Format: Ettersendelse
+    val k9Format: Ettersendelse? = null
     ) {
     internal constructor(
         melding: EttersendingV1,

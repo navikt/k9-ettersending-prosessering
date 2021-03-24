@@ -22,5 +22,13 @@ class Søknadsformat {
             node.remove("vedlegg_urls")
             return objectMapper.writeValueAsBytes(node)
         }
+
+        internal fun somJsonEttersending(
+            ettersending: EttersendingV1
+        ): ByteArray {
+            val node = objectMapper.valueToTree<ObjectNode>(ettersending)
+            node.remove("vedlegg_urls")
+            return objectMapper.writeValueAsBytes(node)
+        }
     }
 }

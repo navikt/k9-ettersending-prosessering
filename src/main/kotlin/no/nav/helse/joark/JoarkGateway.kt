@@ -105,7 +105,15 @@ class JoarkGateway(
         val contentStream = { ByteArrayInputStream(body) }
 
         val httpRequest = when (søknadstype) {
-            OMP_UTV_KS -> journalførOmsorgspengerUrl.byggHttpPost(contentStream, correlationId, authorizationHeader)
+            OMP_UTV_KS -> journalførOmsorgspengerUrl
+                .httpPost()
+                .body(contentStream)
+                .header(
+                    HttpHeaders.XCorrelationId to correlationId.value,
+                    HttpHeaders.Authorization to authorizationHeader,
+                    HttpHeaders.ContentType to "application/json",
+                    HttpHeaders.Accept to "application/json"
+                )
             PLEIEPENGER_SYKT_BARN ->  journalførPleiepengerUrl.byggHttpPost(contentStream, correlationId, authorizationHeader)
             OMP_UT_ARBEIDSTAKER -> journalførOmsorgspengeUtbetalingArbeidstakerUrl.byggHttpPost(contentStream, correlationId, authorizationHeader)
             OMP_UT_SNF -> journalførOmsorgspengeUtbetalingSNFUrl.byggHttpPost(contentStream, correlationId, authorizationHeader)

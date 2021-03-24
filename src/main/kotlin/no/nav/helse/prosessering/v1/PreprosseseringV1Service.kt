@@ -6,6 +6,7 @@ import no.nav.helse.prosessering.v1.felles.Metadata
 import no.nav.helse.prosessering.v1.felles.SoknadId
 import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
+import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.ettersending.reportMetrics
 import no.nav.helse.prosessering.v1.felles.AktørId
 import org.slf4j.LoggerFactory
@@ -22,7 +23,7 @@ internal class PreprosseseringV1Service(
     internal suspend fun preprosseserEttersending(
         melding: EttersendingV1,
         metadata: Metadata,
-        søknadstype: String
+        søknadstype: Søknadstype
     ): PreprosessertEttersendingV1 {
         val søknadId = SoknadId(melding.søknadId)
         logger.info("Preprosseserer ettersending med søknadId: $søknadId")
@@ -47,10 +48,10 @@ internal class PreprosseseringV1Service(
         logger.info("Mellomlagrer Oppsummerings-JSON")
 
         val soknadJsonUrl = dokumentService.lagreSoknadsMeldingEttersending(
-            melding = melding,
+            k9Format = melding.k9Format,
             aktørId = søkerAktørId,
             correlationId = correlationId,
-            søknadstype = melding.søknadstype.type
+            søknadstype = melding.søknadstype.pdfNavn
         )
         logger.info("Mellomlagrer Oppsummerings-JSON OK.")
 

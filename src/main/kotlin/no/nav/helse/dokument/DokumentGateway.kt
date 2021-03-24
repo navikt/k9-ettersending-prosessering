@@ -82,7 +82,6 @@ class DokumentGateway(
         correlationId: CorrelationId
     ) : List<URI> {
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(lagreDokumentScopes).asAuthoriationHeader()
-
         return coroutineScope {
             val deferred = mutableListOf<Deferred<URI>>()
             dokumenter.forEach { dokument: Dokument ->

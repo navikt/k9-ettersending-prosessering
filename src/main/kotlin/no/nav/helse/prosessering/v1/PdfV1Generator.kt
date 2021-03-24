@@ -36,7 +36,7 @@ internal class PdfV1Generator {
             registerHelper("eq", Helper<String> { context, options ->
                 if (context == options.param(0)) options.fn() else options.inverse()
             })
-            registerHelper("capitalize", Helper<String> { context, options ->
+            registerHelper("capitalize", Helper<String> { context, _ ->
                 context.capitalize()
             })
             registerHelper("eqTall", Helper<Int> { context, options ->
@@ -97,7 +97,7 @@ internal class PdfV1Generator {
                         "vedleggUrls" to mapOf(
                             "vedlegg" to melding.vedleggUrls.somMapVedleggUrls()
                         ),
-                        "søknadstype" to melding.søknadstype.type,
+                        "søknadstype" to melding.søknadstype.pdfNavn,
                         "samtykke" to mapOf(
                             "harForståttRettigheterOgPlikter" to melding.harForståttRettigheterOgPlikter,
                             "harBekreftetOpplysninger" to melding.harBekreftetOpplysninger

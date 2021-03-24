@@ -1,8 +1,7 @@
 package no.nav.helse
 
 import no.nav.helse.prosessering.v1.PdfV1Generator
-import no.nav.helse.prosessering.v1.ettersending.SøknadsType
-import org.junit.Ignore
+import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import java.io.File
 import java.time.LocalDate
 import kotlin.test.Test
@@ -18,15 +17,31 @@ class PdfV1GeneratorTest {
         var id = "1-full-ettersending-omsorgspenger"
         var pdf = generator.generateSoknadOppsummeringPdfEttersending(
             melding = EttersendingUtils.defaultEttersending.copy(
-                søknadstype = SøknadsType.OMSORGSPENGER
+                søknadstype = Søknadstype.OMP_UTV_KS
             )
         )
-
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
         id = "2-full-ettersending-pleiepenger"
         pdf = generator.generateSoknadOppsummeringPdfEttersending(
             melding = EttersendingUtils.defaultEttersending.copy(
-                søknadstype = SøknadsType.PLEIEPENGER
+                søknadstype = Søknadstype.PLEIEPENGER_SYKT_BARN
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "3-full-ettersending-omsorgspenger-utbetalin"
+        pdf = generator.generateSoknadOppsummeringPdfEttersending(
+            melding = EttersendingUtils.defaultEttersending.copy(
+                søknadstype = Søknadstype.OMP_UT
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
+        id = "4-full-ettersending-omsorgspenger-midlertidig-alene"
+        pdf = generator.generateSoknadOppsummeringPdfEttersending(
+            melding = EttersendingUtils.defaultEttersending.copy(
+                søknadstype = Søknadstype.OMP_UTV_MA
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)

@@ -20,9 +20,7 @@ import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
-import no.nav.helse.prosessering.v1.ettersending.SøknadsType
-import no.nav.helse.prosessering.v1.ettersending.SøknadsType.OMSORGSPENGER
-import no.nav.helse.prosessering.v1.ettersending.SøknadsType.PLEIEPENGER
+import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.felles.AktørId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -71,7 +69,7 @@ class JoarkGateway(
         mottatt: ZonedDateTime,
         dokumenter: List<List<URI>>,
         correlationId: CorrelationId,
-        søknadstype: SøknadsType
+        søknadstype: Søknadstype
     ): JournalPostId {
 
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
@@ -88,7 +86,7 @@ class JoarkGateway(
         val contentStream = { ByteArrayInputStream(body) }
 
         val httpRequest = when (søknadstype) {
-            OMSORGSPENGER -> journalførOmsorgspengerUrl
+            Søknadstype.OMP_UTV_KS -> journalførOmsorgspengerUrl
                 .httpPost()
                 .body(contentStream)
                 .header(
@@ -97,7 +95,7 @@ class JoarkGateway(
                     HttpHeaders.ContentType to "application/json",
                     HttpHeaders.Accept to "application/json"
                 )
-            PLEIEPENGER ->  journalførPleiepengerUrl
+            Søknadstype.PLEIEPENGER_SYKT_BARN ->  journalførPleiepengerUrl
                 .httpPost()
                 .body(contentStream)
                 .header(
@@ -106,6 +104,7 @@ class JoarkGateway(
                     HttpHeaders.ContentType to "application/json",
                     HttpHeaders.Accept to "application/json"
                 )
+            else -> throw Exception("FEIL SØKNADSTYPE") //TODO 23.03.2021 - Lage spesifikk feil
         }
 
         val (request, response, result) = Operation.monitored(

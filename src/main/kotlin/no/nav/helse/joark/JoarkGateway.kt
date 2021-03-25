@@ -143,6 +143,8 @@ private fun String.byggHttpPost(
 ): Request {
     return this
         .httpPost()
+        .timeout(120_000)
+        .timeoutRead(120_000)
         .body(contentStream)
         .header(
             HttpHeaders.XCorrelationId to correlationId.value,

@@ -2,7 +2,7 @@ package no.nav.helse
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
-import no.nav.helse.prosessering.v1.ettersending.SøknadsType
+import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.felles.Søker
 import java.net.URI
 import java.time.LocalDate
@@ -29,7 +29,7 @@ internal object EttersendingUtils {
         beskrivelse = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. " +
                 "Sed accumsan erat cursus enim aliquet, ac auctor orci consequat. " +
                 "Etiam nec tellus sapien. Nam gravida massa id sagittis ultrices.",
-        søknadstype = SøknadsType.OMSORGSPENGER,
+        søknadstype = Søknadstype.OMP_UTV_KS,
         vedleggUrls = listOf(
             URI("http://localhost:8081/vedlegg1"),
             URI("http://localhost:8081/vedlegg2"),
@@ -37,6 +37,8 @@ internal object EttersendingUtils {
         ),
         titler = listOf("Vedlegg 1", "Vedlegg 2", "Vedlegg 3")
     )
+
+
 }
 
 internal fun EttersendingV1.somJson() = EttersendingUtils.objectMapper.writeValueAsString(this)

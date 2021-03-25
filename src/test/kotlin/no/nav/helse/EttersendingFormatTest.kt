@@ -2,7 +2,7 @@ package no.nav.helse
 
 import no.nav.helse.dokument.Søknadsformat
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
-import no.nav.helse.prosessering.v1.ettersending.SøknadsType
+import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.felles.Søker
 import org.junit.Test
 import org.skyscreamer.jsonassert.JSONAssert
@@ -16,6 +16,7 @@ class EttersendingFormatTest{
     @Test
     fun `Ettersending journalføres som JSON`(){
         val søknadId = UUID.randomUUID().toString()
+        val mottatt = ZonedDateTime.of(2018, 1, 2, 3, 4, 5, 6, ZoneId.of("UTC"))
         val json = Søknadsformat.somJsonEttersending(melding(søknadId))
         println(String(json))
         JSONAssert.assertEquals(
@@ -38,7 +39,7 @@ class EttersendingFormatTest{
                   "harForståttRettigheterOgPlikter": true,
                   "harBekreftetOpplysninger": true,
                   "beskrivelse": "Blablabla beskrivelse",
-                  "søknadstype": "omsorgspenger",
+                  "søknadstype": "OMP_UTV_KS",
                   "titler": [
                     "vedlegg1"
                   ]
@@ -61,7 +62,7 @@ class EttersendingFormatTest{
         harBekreftetOpplysninger = true,
         harForståttRettigheterOgPlikter = true,
         beskrivelse = "Blablabla beskrivelse",
-        søknadstype = SøknadsType.OMSORGSPENGER,
+        søknadstype = Søknadstype.OMP_UTV_KS,
         vedleggUrls = listOf(URI("http://localhost.com/vedlegg1")),
         titler = listOf("vedlegg1")
     )

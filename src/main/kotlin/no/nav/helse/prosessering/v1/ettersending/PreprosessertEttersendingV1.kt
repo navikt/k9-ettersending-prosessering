@@ -2,6 +2,7 @@ package no.nav.helse.prosessering.v1.ettersending
 
 import no.nav.helse.prosessering.v1.felles.AktørId
 import no.nav.helse.prosessering.v1.felles.PreprossesertSøker
+import no.nav.k9.ettersendelse.Ettersendelse
 import java.net.URI
 import java.time.ZonedDateTime
 
@@ -14,7 +15,7 @@ data class PreprosessertEttersendingV1(
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
     val beskrivelse: String,
-    val søknadstype: SøknadsType,
+    val søknadstype: Søknadstype,
     val titler: List<String>
     ) {
     internal constructor(

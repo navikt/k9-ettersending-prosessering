@@ -42,14 +42,14 @@ class DokumentService(
     }
 
     internal suspend fun lagreSoknadsMeldingEttersending(
-        melding: EttersendingV1,
+        ettersending: EttersendingV1,
         aktørId: AktørId,
         correlationId: CorrelationId,
         søknadstype: String
     ) : URI {
         return lagreDokument(
             dokument = DokumentGateway.Dokument(
-                content = Søknadsformat.somJsonEttersending(melding),
+                content = Søknadsformat.somJsonEttersending(ettersending),
                 contentType = "application/json",
                 title = "Ettersendelse $søknadstype som JSON"
             ),

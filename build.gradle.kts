@@ -31,6 +31,8 @@ dependencies {
     implementation ( "no.nav.helse:dusseldorf-ktor-metrics:$dusseldorfKtorVersion")
     implementation ( "no.nav.helse:dusseldorf-ktor-health:$dusseldorfKtorVersion")
     implementation ( "no.nav.helse:dusseldorf-ktor-auth:$dusseldorfKtorVersion")
+
+    // K9-format
     implementation ( "no.nav.k9:ettersendelse:$k9FormatVersion")
 
     implementation ( "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")

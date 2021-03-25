@@ -11,6 +11,6 @@ private val antallVedleggHistogram = Histogram.build()
 
 internal fun PreprosessertEttersendingV1.reportMetrics() {
     antallVedleggHistogram
-        .labels(søknadstype.type)
+        .labels(søknadstype.name) ////TODO 23.03.2021 - Må oppdatere Grafana til å støtte nytt navn
         .observe(dokumentUrls.size.toDouble()-1) //Minus 1 fordi også oppsummeringPDF blir lagt i dokumentUrls
 }

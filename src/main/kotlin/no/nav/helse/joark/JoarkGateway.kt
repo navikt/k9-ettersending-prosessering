@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.github.kittinunf.fuel.httpPost
 import io.ktor.http.HttpHeaders
@@ -20,9 +21,8 @@ import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
-import no.nav.helse.prosessering.v1.ettersending.SøknadsType
-import no.nav.helse.prosessering.v1.ettersending.SøknadsType.OMSORGSPENGER
-import no.nav.helse.prosessering.v1.ettersending.SøknadsType.PLEIEPENGER
+import no.nav.helse.prosessering.v1.ettersending.Søknadstype
+import no.nav.helse.prosessering.v1.ettersending.Søknadstype.*
 import no.nav.helse.prosessering.v1.felles.AktørId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -43,6 +43,23 @@ class JoarkGateway(
     private val journalførOmsorgspengerUrl = Url.buildURL(
         baseUrl = baseUrl,
         pathParts = listOf("v1", "omsorgspenge", "ettersending", "journalforing")
+    ).toString()
+
+    private val journalførOmsorgspengeUtbetalingArbeidstakerUrl = Url.buildURL(
+        baseUrl = baseUrl,
+        pathParts = listOf("v1", "omsorgspengeutbetaling", "ettersending", "journalforing"),
+        queryParameters = mapOf("arbeidstype" to listOf("arbeidstaker"))
+    ).toString()
+
+    private val journalførOmsorgspengeUtbetalingSNFUrl = Url.buildURL(
+        baseUrl = baseUrl,
+        pathParts = listOf("v1", "omsorgspengeutbetaling", "ettersending", "journalforing"),
+        queryParameters = mapOf("arbeidstype" to listOf("frilanser", "selvstendig næringsdrivende"))
+    ).toString()
+
+    private val journalførOmsorgspengerMidlertidigAleneUrl = Url.buildURL(
+        baseUrl = baseUrl,
+        pathParts = listOf("v1", "omsorgspenger","midlertidig-alene", "ettersending", "journalforing")
     ).toString()
 
     private val journalførPleiepengerUrl = Url.buildURL(
@@ -71,7 +88,7 @@ class JoarkGateway(
         mottatt: ZonedDateTime,
         dokumenter: List<List<URI>>,
         correlationId: CorrelationId,
-        søknadstype: SøknadsType
+        søknadstype: Søknadstype
     ): JournalPostId {
 
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
@@ -88,25 +105,12 @@ class JoarkGateway(
         val contentStream = { ByteArrayInputStream(body) }
 
         val httpRequest = when (søknadstype) {
-            OMSORGSPENGER -> journalførOmsorgspengerUrl
-                .httpPost()
-                .body(contentStream)
-                .header(
-                    HttpHeaders.XCorrelationId to correlationId.value,
-                    HttpHeaders.Authorization to authorizationHeader,
-                    HttpHeaders.ContentType to "application/json",
-                    HttpHeaders.Accept to "application/json"
-                )
-            PLEIEPENGER ->  journalførPleiepengerUrl
-                .httpPost()
-                .body(contentStream)
-                .header(
-                    HttpHeaders.XCorrelationId to correlationId.value,
-                    HttpHeaders.Authorization to authorizationHeader,
-                    HttpHeaders.ContentType to "application/json",
-                    HttpHeaders.Accept to "application/json"
-                )
-        }
+            OMP_UTV_KS -> journalførOmsorgspengerUrl
+            PLEIEPENGER_SYKT_BARN ->  journalførPleiepengerUrl
+            OMP_UT_ARBEIDSTAKER -> journalførOmsorgspengeUtbetalingArbeidstakerUrl
+            OMP_UT_SNF -> journalførOmsorgspengeUtbetalingSNFUrl
+            OMP_UTV_MA -> journalførOmsorgspengerMidlertidigAleneUrl
+        }.byggHttpPost(contentStream, correlationId, authorizationHeader)
 
         val (request, response, result) = Operation.monitored(
             app = "k9-ettersending-prosessering",
@@ -119,11 +123,10 @@ class JoarkGateway(
             { error ->
                 logger.error("Error response = '${error.response.body().asString("text/plain")}' fra '${request.url}'")
                 logger.error(error.toString())
-                throw HttpError(response.statusCode, "Feil ved jorunalføring.")
+                throw HttpError(response.statusCode, "Feil ved journalføring.")
             }
         )
     }
-
 
     private fun configuredObjectMapper(): ObjectMapper {
         val objectMapper = jacksonObjectMapper()
@@ -131,6 +134,24 @@ class JoarkGateway(
         objectMapper.registerModule(JavaTimeModule())
         return objectMapper
     }
+}
+
+private fun String.byggHttpPost(
+    contentStream: () -> ByteArrayInputStream,
+    correlationId: CorrelationId,
+    authorizationHeader: String
+): Request {
+    return this
+        .httpPost()
+        .timeout(120_000)
+        .timeoutRead(120_000)
+        .body(contentStream)
+        .header(
+            HttpHeaders.XCorrelationId to correlationId.value,
+            HttpHeaders.Authorization to authorizationHeader,
+            HttpHeaders.ContentType to "application/json",
+            HttpHeaders.Accept to "application/json"
+        )
 }
 
 private data class JoarkRequest(

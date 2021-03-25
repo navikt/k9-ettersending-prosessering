@@ -9,7 +9,7 @@ import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
-import no.nav.helse.prosessering.v1.ettersending.SøknadsType
+import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.felles.AktørId
 import no.nav.helse.tilK9Søker
 import no.nav.k9.ettersendelse.Ettersendelse
@@ -106,6 +106,6 @@ private fun PreprosessertEttersendingV1.tilK9Ettersendelse(): Ettersendelse = Et
     .build()
 
 private fun PreprosessertEttersendingV1.tilK9Ytelse() = when(søknadstype) {
-    SøknadsType.PLEIEPENGER -> Ytelse.PLEIEPENGER_SYKT_BARN
-    SøknadsType.OMSORGSPENGER -> Ytelse.OMSORGSPENGER
+    Søknadstype.PLEIEPENGER_SYKT_BARN -> Ytelse.PLEIEPENGER_SYKT_BARN
+    else -> Ytelse.OMSORGSPENGER
 }

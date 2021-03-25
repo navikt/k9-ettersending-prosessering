@@ -1,6 +1,6 @@
 package no.nav.helse.dokument
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -11,13 +11,13 @@ class Søknadsformat {
     companion object {
         private val objectMapper = jacksonObjectMapper()
             .dusseldorfConfigured()
-            .setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CAMEL_CASE)
+            .setPropertyNamingStrategy(PropertyNamingStrategies.LOWER_CAMEL_CASE)
             .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
 
         internal fun somJsonEttersending(
-            meldingV1: EttersendingV1
+            ettersending: EttersendingV1
         ): ByteArray {
-            val node = objectMapper.valueToTree<ObjectNode>(meldingV1)
+            val node = objectMapper.valueToTree<ObjectNode>(ettersending)
             node.remove("vedlegg_urls")
             return objectMapper.writeValueAsBytes(node)
         }

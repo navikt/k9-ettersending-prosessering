@@ -55,7 +55,7 @@ internal class PreprosseseringStreamEttersending(
                         val preprossesertMelding = preprosseseringV1Service.preprosseserEttersending(
                             melding = entry.data,
                             metadata = entry.metadata,
-                            søknadstype = entry.data.søknadstype.type
+                            søknadstype = entry.data.søknadstype
                         )
                         logger.info("Preprossesering av ettersending ferdig.")
                         preprossesertMelding

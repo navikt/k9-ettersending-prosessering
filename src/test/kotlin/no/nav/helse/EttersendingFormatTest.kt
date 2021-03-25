@@ -39,7 +39,7 @@ class EttersendingFormatTest{
                   "harForståttRettigheterOgPlikter": true,
                   "harBekreftetOpplysninger": true,
                   "beskrivelse": "Blablabla beskrivelse",
-                  "søknadstype": "omsorgspenger",
+                  "søknadstype": "OMP_UTV_KS",
                   "titler": [
                     "vedlegg1"
                   ]
@@ -62,7 +62,7 @@ class EttersendingFormatTest{
         harBekreftetOpplysninger = true,
         harForståttRettigheterOgPlikter = true,
         beskrivelse = "Blablabla beskrivelse",
-        søknadstype = Søknadstype.OMP_UTV_MA,
+        søknadstype = Søknadstype.OMP_UTV_KS,
         vedleggUrls = listOf(URI("http://localhost.com/vedlegg1")),
         titler = listOf("vedlegg1")
     )

@@ -48,23 +48,13 @@ internal class PreprosseseringV1Service(
 
         logger.info("Mellomlagrer Oppsummerings-JSON")
 
-        val soknadJsonUrl = if(melding.k9Format != null) {
-            logger.info("K9Format som lagres: ${Ettersendelse.SerDes.serialize(melding.k9Format)}") //TODO 24.03.2021 - Fjernes før prodsetting
+        val soknadJsonUrl = dokumentService.lagreSoknadsMeldingEttersending(
+            ettersending = melding,
+            aktørId = søkerAktørId,
+            correlationId = correlationId,
+            søknadstype = melding.søknadstype.pdfNavn
+        )
 
-            dokumentService.lagreSoknadsMeldingEttersending(
-                k9Format = melding.k9Format,
-                aktørId = søkerAktørId,
-                correlationId = correlationId,
-                søknadstype = melding.søknadstype.pdfNavn
-            )
-        } else {
-            dokumentService.lagreSoknadsMeldingEttersending(
-                ettersending = melding,
-                aktørId = søkerAktørId,
-                correlationId = correlationId,
-                søknadstype = melding.søknadstype.pdfNavn
-            )
-        }
 
         logger.info("Mellomlagrer Oppsummerings-JSON OK.")
 

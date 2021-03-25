@@ -3,7 +3,6 @@ package no.nav.helse.dokument
 import no.nav.helse.CorrelationId
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.helse.prosessering.v1.felles.AktørId
-import no.nav.k9.ettersendelse.Ettersendelse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -36,23 +35,6 @@ class DokumentService(
                 content = pdf,
                 contentType = "application/pdf",
                 title = dokumentbeskrivelse
-            ),
-            aktørId = aktørId,
-            correlationId = correlationId
-        )
-    }
-
-    internal suspend fun lagreSoknadsMeldingEttersending(
-        k9Format: Ettersendelse,
-        aktørId: AktørId,
-        correlationId: CorrelationId,
-        søknadstype: String
-    ) : URI {
-        return lagreDokument(
-            dokument = DokumentGateway.Dokument(
-                content = Søknadsformat.somJsonEttersending(k9Format),
-                contentType = "application/json",
-                title = "Ettersendelse $søknadstype som JSON"
             ),
             aktørId = aktørId,
             correlationId = correlationId

@@ -17,8 +17,7 @@ data class EttersendingV1(
     val harBekreftetOpplysninger: Boolean,
     val beskrivelse: String,
     val søknadstype: Søknadstype,
-    val titler: List<String>,
-    val k9Format: Ettersendelse? = null
+    val titler: List<String>
 )
 
 enum class Søknadstype(val pdfNavn: String){

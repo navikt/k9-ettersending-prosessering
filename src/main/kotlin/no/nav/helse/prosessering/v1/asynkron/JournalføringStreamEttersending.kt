@@ -8,15 +8,12 @@ import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
-import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.felles.AktørId
+import no.nav.helse.tilK9Søker
 import no.nav.k9.ettersendelse.Ettersendelse
 import no.nav.k9.ettersendelse.Ytelse
-import no.nav.k9.søknad.felles.personopplysninger.Søker
-import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
-import no.nav.k9.søknad.felles.type.SøknadId
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
@@ -81,7 +78,7 @@ internal class JournalføringStreamEttersending(
                         logger.info("Dokumenter journalført med ID = ${journaPostId.journalpostId}.")
                         val journalfort = JournalfortEttersending(
                             journalpostId = journaPostId.journalpostId,
-                            søknad = entry.data.k9Format ?: entry.data.tilK9Format() //TODO 24.03.2021 - Når API har vært prodsatt en stund kan vi fjerne tilK9Format()
+                            søknad = entry.data.tilK9Ettersendelse()
                         )
 
                         erJournalført.add(entry.metadata.correlationId)
@@ -102,22 +99,13 @@ internal class JournalføringStreamEttersending(
     internal fun stop() = stream.stop(becauseOfError = false)
 }
 
-fun PreprosessertEttersendingV1.tilK9Format() : Ettersendelse {
-    val builder = Ettersendelse.builder()
-    builder
-        .søknadId(SøknadId(this.soknadId))
-        .mottattDato(mottatt)
-        .søker(Søker(NorskIdentitetsnummer.of(søker.fødselsnummer)))
-        .ytelse(søknadstype.tilK9Ytelse())
+private fun PreprosessertEttersendingV1.tilK9Ettersendelse(): Ettersendelse = Ettersendelse.builder()
+    .mottattDato(mottatt)
+    .søker(søker.tilK9Søker())
+    .ytelse(tilK9Ytelse())
+    .build()
 
-    return builder.build()
-}
-
-private fun Søknadstype.tilK9Ytelse(): Ytelse {
-    return when(this){
-        Søknadstype.OMP_UTV_KS -> Ytelse.OMP_UTV_KS
-        Søknadstype.OMP_UTV_MA -> Ytelse.OMP_UTV_MA
-        Søknadstype.PLEIEPENGER_SYKT_BARN -> Ytelse.PLEIEPENGER_SYKT_BARN
-        Søknadstype.OMP_UT_SNF, Søknadstype.OMP_UT_ARBEIDSTAKER -> Ytelse.OMP_UT
-    }
+private fun PreprosessertEttersendingV1.tilK9Ytelse() = when(søknadstype) {
+    Søknadstype.PLEIEPENGER_SYKT_BARN -> Ytelse.PLEIEPENGER_SYKT_BARN
+    else -> Ytelse.OMSORGSPENGER
 }

@@ -4,15 +4,9 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.felles.Søker
-import no.nav.k9.ettersendelse.Ettersendelse
-import no.nav.k9.ettersendelse.Ytelse
-import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
-import no.nav.k9.søknad.felles.type.SøknadId
 import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
-import java.util.*
-import no.nav.k9.søknad.felles.personopplysninger.Søker as K9Søker
 
 internal object EttersendingUtils {
     internal val objectMapper = jacksonObjectMapper().k9EttersendingKonfigurert()
@@ -41,17 +35,10 @@ internal object EttersendingUtils {
             URI("http://localhost:8081/vedlegg2"),
             URI("http://localhost:8081/vedlegg3")
         ),
-        titler = listOf("Vedlegg 1", "Vedlegg 2", "Vedlegg 3"),
-        k9Format = k9Format()
+        titler = listOf("Vedlegg 1", "Vedlegg 2", "Vedlegg 3")
     )
 
-    fun k9Format(søknadId: String = UUID.randomUUID().toString(), mottatt: ZonedDateTime? = ZonedDateTime.now()): Ettersendelse = Ettersendelse
-        .builder()
-        .mottattDato(mottatt)
-        .søker(K9Søker(NorskIdentitetsnummer.of("29099012345")))
-        .ytelse(Ytelse.OMP_UTV_KS)
-        .søknadId(SøknadId(søknadId))
-        .build()
+
 }
 
 internal fun EttersendingV1.somJson() = EttersendingUtils.objectMapper.writeValueAsString(this)

@@ -1,15 +1,15 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "1.5.2.1303b90"
+val dusseldorfKtorVersion = "1.5.2.5b2dff7"
 val k9FormatVersion = "3.0.0.f5ec313"
 val ktorVersion = ext.get("ktorVersion").toString()
 val slf4jVersion = ext.get("slf4jVersion").toString()
 val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
 
 val openhtmltopdfVersion = "1.0.8"
-val kafkaEmbeddedEnvVersion = "2.4.0"
-val kafkaVersion = "2.4.0" // Alligned med version fra kafka-embedded-env
+val kafkaEmbeddedEnvVersion = ext.get("kafkaEmbeddedEnvVersion").toString()
+val kafkaVersion = ext.get("kafkaVersion").toString() // Alligned med version fra kafka-embedded-env
 val handlebarsVersion = "4.1.2"
 
 val mainClass = "no.nav.helse.K9EttersendingProsesseringKt"
@@ -21,7 +21,7 @@ plugins {
 
 buildscript {
     // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/1303b90c37ad3d94905c6eb7f6b47b6312d19aba/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/5b2dff7a11531e487ebdee06b6ae94e0e50287c2/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
@@ -74,8 +74,7 @@ repositories {
     }
 
     mavenCentral()
-    jcenter()
-
+    maven("https://jitpack.io")
     maven("https://dl.bintray.com/kotlin/ktor")
     maven("https://kotlin.bintray.com/kotlinx")
     maven("http://packages.confluent.io/maven/")
@@ -105,5 +104,5 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "6.7.1"
+    gradleVersion = "6.8.3"
 }

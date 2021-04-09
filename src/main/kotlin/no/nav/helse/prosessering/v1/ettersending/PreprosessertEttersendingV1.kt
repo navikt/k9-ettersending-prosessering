@@ -14,7 +14,7 @@ data class PreprosessertEttersendingV1(
     val søker: PreprossesertSøker,
     val harForstattRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
-    val beskrivelse: String,
+    val beskrivelse: String?,
     val søknadstype: Søknadstype,
     val titler: List<String>
     ) {

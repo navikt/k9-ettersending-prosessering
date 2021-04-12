@@ -17,7 +17,8 @@ class PdfV1GeneratorTest {
         var id = "1-full-ettersending-omsorgspenger"
         var pdf = generator.generateSoknadOppsummeringPdfEttersending(
             melding = EttersendingUtils.defaultEttersending.copy(
-                søknadstype = Søknadstype.OMP_UTV_KS
+                søknadstype = Søknadstype.OMP_UTV_KS,
+                beskrivelse = null
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
@@ -33,7 +34,8 @@ class PdfV1GeneratorTest {
         id = "3-full-ettersending-omsorgspenger-utbetaling-snf"
         pdf = generator.generateSoknadOppsummeringPdfEttersending(
             melding = EttersendingUtils.defaultEttersending.copy(
-                søknadstype = Søknadstype.OMP_UT_SNF
+                søknadstype = Søknadstype.OMP_UT_SNF,
+                beskrivelse = null
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
@@ -41,7 +43,8 @@ class PdfV1GeneratorTest {
         id = "4-full-ettersending-omsorgspenger-utbetaling-arbeidstaker"
         pdf = generator.generateSoknadOppsummeringPdfEttersending(
             melding = EttersendingUtils.defaultEttersending.copy(
-                søknadstype = Søknadstype.OMP_UT_ARBEIDSTAKER
+                søknadstype = Søknadstype.OMP_UT_ARBEIDSTAKER,
+                beskrivelse = null
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
@@ -49,7 +52,8 @@ class PdfV1GeneratorTest {
         id = "5-full-ettersending-omsorgspenger-midlertidig-alene"
         pdf = generator.generateSoknadOppsummeringPdfEttersending(
             melding = EttersendingUtils.defaultEttersending.copy(
-                søknadstype = Søknadstype.OMP_UTV_MA
+                søknadstype = Søknadstype.OMP_UTV_MA,
+                beskrivelse = null
             )
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)

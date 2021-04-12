@@ -15,7 +15,7 @@ data class EttersendingV1(
     val vedleggUrls: List<URI>,
     val harForståttRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
-    val beskrivelse: String,
+    val beskrivelse: String?,
     val søknadstype: Søknadstype,
     val titler: List<String>
 )

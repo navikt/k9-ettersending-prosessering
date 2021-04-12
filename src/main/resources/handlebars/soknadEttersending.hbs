@@ -34,9 +34,11 @@
 
     <!-- Ettersending -->
     <section id="ettersending">
+        {{#if beskrivelse}}
         <h2>Ettersending av vedlegg</h2>
-        <p class="sporsmalstekst">Søkers beskrivelse av ettersendingen:</p>
-        <p class="fritekst_testarea">{{beskrivelse}}</p>
+            <p class="sporsmalstekst">Søkers beskrivelse av ettersendingen:</p>
+            <p class="fritekst_testarea">{{beskrivelse}}</p>
+        {{/if}}
     </section>
 
     <!-- Dokumenter -->

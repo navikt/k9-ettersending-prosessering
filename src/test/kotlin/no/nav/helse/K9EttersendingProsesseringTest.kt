@@ -12,22 +12,13 @@ import io.ktor.server.testing.createTestEnvironment
 import io.ktor.server.testing.handleRequest
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.CollectorRegistry
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
-import no.nav.helse.k9.assertEttersendeFormat
-import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
-import no.nav.helse.prosessering.v1.felles.Søker
+import no.nav.helse.k9.assertCleanupEttersendeFormat
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URI
-import java.time.Duration
-import java.time.LocalDate
-import java.time.ZonedDateTime
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -53,7 +44,7 @@ class K9EttersendingProsesseringTest {
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestProducerEttersending = kafkaEnvironment.meldingEttersendingProducer()
-        private val journalføringsKonsumerEttersending = kafkaEnvironment.journalføringsKonsumerEttersending()
+        private val journalføringsKonsumerEttersending = kafkaEnvironment.cleanupKonsumerEttersending()
 
         // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
         private val gyldigFodselsnummerA = "02119970078"
@@ -134,7 +125,7 @@ class K9EttersendingProsesseringTest {
 
         kafkaTestProducerEttersending.leggTilMottak(søknad)
         journalføringsKonsumerEttersending
-            .hentJournalførtMeldingEttersending(søknad.søknadId)
-            .assertEttersendeFormat()
+            .hentCleanupMeldingEttersending(søknad.søknadId)
+            .assertCleanupEttersendeFormat()
     }
 }

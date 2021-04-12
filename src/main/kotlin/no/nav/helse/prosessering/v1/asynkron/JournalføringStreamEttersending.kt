@@ -9,11 +9,7 @@ import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
-import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.felles.AktørId
-import no.nav.helse.tilK9Søker
-import no.nav.k9.ettersendelse.Ettersendelse
-import no.nav.k9.ettersendelse.Ytelse
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.apache.kafka.streams.kstream.Consumed
@@ -78,7 +74,7 @@ internal class JournalføringStreamEttersending(
                         logger.info("Dokumenter journalført med ID = ${journaPostId.journalpostId}.")
                         val journalfort = JournalfortEttersending(
                             journalpostId = journaPostId.journalpostId,
-                            søknad = entry.data.tilK9Ettersendelse()
+                            søknad = entry.data.k9Format
                         )
 
                         erJournalført.add(entry.metadata.correlationId)
@@ -97,15 +93,4 @@ internal class JournalføringStreamEttersending(
     }
 
     internal fun stop() = stream.stop(becauseOfError = false)
-}
-
-private fun PreprosessertEttersendingV1.tilK9Ettersendelse(): Ettersendelse = Ettersendelse.builder()
-    .mottattDato(mottatt)
-    .søker(søker.tilK9Søker())
-    .ytelse(tilK9Ytelse())
-    .build()
-
-private fun PreprosessertEttersendingV1.tilK9Ytelse() = when(søknadstype) {
-    Søknadstype.PLEIEPENGER_SYKT_BARN -> Ytelse.PLEIEPENGER_SYKT_BARN
-    else -> Ytelse.OMSORGSPENGER
 }

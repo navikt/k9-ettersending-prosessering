@@ -3,6 +3,7 @@ package no.nav.helse.dokument
 import no.nav.helse.CorrelationId
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.helse.prosessering.v1.felles.AktørId
+import no.nav.k9.ettersendelse.Ettersendelse
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -42,7 +43,7 @@ class DokumentService(
     }
 
     internal suspend fun lagreSoknadsMeldingEttersending(
-        ettersending: EttersendingV1,
+        ettersending: Ettersendelse,
         aktørId: AktørId,
         correlationId: CorrelationId,
         søknadstype: String

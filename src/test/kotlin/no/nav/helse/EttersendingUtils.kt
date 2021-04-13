@@ -17,12 +17,12 @@ internal object EttersendingUtils {
     internal val objectMapper = jacksonObjectMapper().k9EttersendingKonfigurert()
     private val start = LocalDate.parse("2020-01-01")
 
-    internal val defaultEttersending = EttersendingV1(
+    internal fun defaultEttersending(søknadId: String = UUID.randomUUID().toString()) = EttersendingV1(
         språk = "nb",
         mottatt = ZonedDateTime.now(),
         harBekreftetOpplysninger = true,
         harForståttRettigheterOgPlikter = true,
-        søknadId = "Ettersending",
+        søknadId = søknadId,
         søker = Søker(
             aktørId = "123456",
             fornavn = "Ærling",
@@ -42,7 +42,7 @@ internal object EttersendingUtils {
         ),
         titler = listOf("Vedlegg 1", "Vedlegg 2", "Vedlegg 3"),
         k9Format = Ettersendelse.builder()
-            .søknadId(SøknadId(UUID.randomUUID().toString()))
+            .søknadId(SøknadId(søknadId))
             .søker(no.nav.k9.søknad.felles.personopplysninger.Søker(NorskIdentitetsnummer.of("29099012345")))
             .mottattDato(ZonedDateTime.now())
             .ytelse(Ytelse.OMP_UTV_KS)

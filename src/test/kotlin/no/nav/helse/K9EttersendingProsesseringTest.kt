@@ -23,6 +23,7 @@ import org.junit.BeforeClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Duration
+import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -116,7 +117,7 @@ class K9EttersendingProsesseringTest {
     @Test
     fun`Gyldig ettersending for omsorgspenger ekstra dager blir prosessert av journalføringkonsumer`(){
         val søknadstype = Søknadstype.OMP_UTV_KS
-        val søknad = EttersendingUtils.defaultEttersending.copy(
+        val søknad = EttersendingUtils.defaultEttersending().copy(
             søknadstype = søknadstype
         )
 
@@ -129,7 +130,7 @@ class K9EttersendingProsesseringTest {
     @Test
     fun`Gyldig ettersending for pleiepenger sykt barn blir prosessert av journalføringkonsumer`(){
         val søknadstype = Søknadstype.PLEIEPENGER_SYKT_BARN
-        val søknad = EttersendingUtils.defaultEttersending.copy(
+        val søknad = EttersendingUtils.defaultEttersending().copy(
             søknadstype = søknadstype
         )
 
@@ -142,7 +143,7 @@ class K9EttersendingProsesseringTest {
     @Test
     fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
         val søknadstype = Søknadstype.PLEIEPENGER_SYKT_BARN
-        val søknad = EttersendingUtils.defaultEttersending.copy(
+        val søknad = EttersendingUtils.defaultEttersending().copy(
             søknadstype = søknadstype
         )
 

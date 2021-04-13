@@ -4,6 +4,7 @@ import no.nav.helse.CorrelationId
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.helse.prosessering.v1.felles.AktørId
 import no.nav.k9.ettersendelse.Ettersendelse
+import no.nav.k9.søknad.JsonUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
@@ -48,6 +49,7 @@ class DokumentService(
         correlationId: CorrelationId,
         søknadstype: String
     ) : URI {
+        logger.info("SKAL IKKE VISES I PROD. Format som lagres i JOARK: ${JsonUtils.toString(ettersending)}") //TODO 13.04.2021 - Fjerne før prodsetting
         return lagreDokument(
             dokument = DokumentGateway.Dokument(
                 content = Søknadsformat.somJsonEttersending(ettersending),

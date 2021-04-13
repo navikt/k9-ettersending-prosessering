@@ -12,13 +12,17 @@ import io.ktor.server.testing.createTestEnvironment
 import io.ktor.server.testing.handleRequest
 import io.ktor.util.KtorExperimentalAPI
 import io.prometheus.client.CollectorRegistry
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.k9.assertCleanupEttersendeFormat
+import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -44,13 +48,7 @@ class K9EttersendingProsesseringTest {
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestProducerEttersending = kafkaEnvironment.meldingEttersendingProducer()
-        private val journalføringsKonsumerEttersending = kafkaEnvironment.cleanupKonsumerEttersending()
-
-        // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
-        private val gyldigFodselsnummerA = "02119970078"
-        private val gyldigFodselsnummerB = "19066672169"
-        private val gyldigFodselsnummerC = "20037473937"
-        private val dNummerA = "55125314561"
+        private val cleanupKonsumerEttersending = kafkaEnvironment.cleanupKonsumerEttersending()
 
         private var engine = newEngine(kafkaEnvironment).apply {
             start(wait = true)
@@ -116,16 +114,61 @@ class K9EttersendingProsesseringTest {
     }
 
     @Test
-    fun`Gyldig ettersending blir prosessert av journalføringkonsumer`(){
+    fun`Gyldig ettersending for omsorgspenger ekstra dager blir prosessert av journalføringkonsumer`(){
+        val søknadstype = Søknadstype.OMP_UTV_KS
         val søknad = EttersendingUtils.defaultEttersending.copy(
-            søker = EttersendingUtils.defaultEttersending.søker.copy(
-                fødselsnummer = gyldigFodselsnummerA
-            )
+            søknadstype = søknadstype
         )
 
         kafkaTestProducerEttersending.leggTilMottak(søknad)
-        journalføringsKonsumerEttersending
+        cleanupKonsumerEttersending
             .hentCleanupMeldingEttersending(søknad.søknadId)
-            .assertCleanupEttersendeFormat()
+            .assertCleanupEttersendeFormat(søknadstype)
     }
+
+    @Test
+    fun`Gyldig ettersending for pleiepenger sykt barn blir prosessert av journalføringkonsumer`(){
+        val søknadstype = Søknadstype.PLEIEPENGER_SYKT_BARN
+        val søknad = EttersendingUtils.defaultEttersending.copy(
+            søknadstype = søknadstype
+        )
+
+        kafkaTestProducerEttersending.leggTilMottak(søknad)
+        cleanupKonsumerEttersending
+            .hentCleanupMeldingEttersending(søknad.søknadId)
+            .assertCleanupEttersendeFormat(søknadstype)
+    }
+
+    @Test
+    fun `En feilprosessert melding vil bli prosessert etter at tjenesten restartes`() {
+        val søknadstype = Søknadstype.PLEIEPENGER_SYKT_BARN
+        val søknad = EttersendingUtils.defaultEttersending.copy(
+            søknadstype = søknadstype
+        )
+
+        wireMockServer.stubJournalfor(500) // Simulerer feil ved journalføring
+
+        kafkaTestProducerEttersending.leggTilMottak(søknad)
+        ventPaaAtRetryMekanismeIStreamProsessering()
+        readyGir200HealthGir503()
+
+        wireMockServer.stubJournalfor(201) // Simulerer journalføring fungerer igjen
+        restartEngine()
+        cleanupKonsumerEttersending
+            .hentCleanupMeldingEttersending(søknad.søknadId)
+            .assertCleanupEttersendeFormat(søknadstype)
+    }
+
+    private fun readyGir200HealthGir503() {
+        with(engine) {
+            handleRequest(HttpMethod.Get, "/isready") {}.apply {
+                assertEquals(HttpStatusCode.OK, response.status())
+                handleRequest(HttpMethod.Get, "/health") {}.apply {
+                    assertEquals(HttpStatusCode.ServiceUnavailable, response.status())
+                }
+            }
+        }
+    }
+
+    private fun ventPaaAtRetryMekanismeIStreamProsessering() = runBlocking { delay(Duration.ofSeconds(30)) }
 }

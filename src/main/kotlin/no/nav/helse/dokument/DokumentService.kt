@@ -49,7 +49,6 @@ class DokumentService(
         correlationId: CorrelationId,
         søknadstype: String
     ) : URI {
-        logger.info("SKAL IKKE VISES I PROD. Format som lagres i JOARK: ${JsonUtils.toString(ettersending)}") //TODO 13.04.2021 - Fjerne før prodsetting
         return lagreDokument(
             dokument = DokumentGateway.Dokument(
                 content = Søknadsformat.somJsonEttersending(ettersending),

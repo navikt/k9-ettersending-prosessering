@@ -1,7 +1,6 @@
 package no.nav.helse.prosessering.v1.asynkron
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -42,10 +41,6 @@ internal object Topics {
         name = "privat-k9-ettersending-cleanup",
         serDes = CleanupSerDesEttersending()
     )
-    val JOURNALFORT_ETTERSENDING = Topic(
-        name = "privat-k9-digital-ettersendelse-journalfort",
-        serDes = JournalfortSerDesEttersending()
-    )
 }
 
 internal abstract class SerDes<V> : Serializer<V>, Deserializer<V> {
@@ -80,13 +75,6 @@ private class PreprossesertSerDesEttersending: SerDes<TopicEntry<PreprosessertEt
 
 private class CleanupSerDesEttersending: SerDes<TopicEntry<CleanupEttersending>>() {
     override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<CleanupEttersending>? {
-        return data?.let {
-            objectMapper.readValue(it)
-        }
-    }
-}
-private class JournalfortSerDesEttersending: SerDes<TopicEntry<JournalfortEttersending>>() {
-    override fun deserialize(topic: String?, data: ByteArray?): TopicEntry<JournalfortEttersending>? {
         return data?.let {
             objectMapper.readValue(it)
         }

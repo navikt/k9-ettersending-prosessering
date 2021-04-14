@@ -5,7 +5,6 @@ import no.nav.common.KafkaEnvironment
 import no.nav.helse.prosessering.v1.felles.Metadata
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP_ETTERSENDING
-import no.nav.helse.prosessering.v1.asynkron.Topics.JOURNALFORT_ETTERSENDING
 import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT_ETTERSENDING
 import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSSESERT_ETTERSENDING
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
@@ -34,7 +33,6 @@ object KafkaWrapper {
             topicNames = listOf(
                 MOTTATT_ETTERSENDING.name,
                 PREPROSSESERT_ETTERSENDING.name,
-                JOURNALFORT_ETTERSENDING.name,
                 CLEANUP_ETTERSENDING.name
             )
         )

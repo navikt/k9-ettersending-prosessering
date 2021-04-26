@@ -2,32 +2,19 @@ package no.nav.helse
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.typesafe.config.ConfigFactory
-import io.ktor.config.ApplicationConfig
-import io.ktor.config.HoconApplicationConfig
-import io.ktor.http.HttpMethod
-import io.ktor.http.HttpStatusCode
-import io.ktor.server.engine.stop
-import io.ktor.server.testing.TestApplicationEngine
-import io.ktor.server.testing.createTestEnvironment
-import io.ktor.server.testing.handleRequest
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.config.*
+import io.ktor.http.*
+import io.ktor.server.engine.*
+import io.ktor.server.testing.*
+import io.ktor.util.*
 import io.prometheus.client.CollectorRegistry
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.time.delay
 import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.k9.assertEttersendeFormat
-import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
-import no.nav.helse.prosessering.v1.felles.Søker
 import org.junit.AfterClass
 import org.junit.BeforeClass
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import java.net.URI
-import java.time.Duration
-import java.time.LocalDate
-import java.time.ZonedDateTime
-import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
 import kotlin.test.assertEquals
@@ -57,9 +44,6 @@ class K9EttersendingProsesseringTest {
 
         // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
         private val gyldigFodselsnummerA = "02119970078"
-        private val gyldigFodselsnummerB = "19066672169"
-        private val gyldigFodselsnummerC = "20037473937"
-        private val dNummerA = "55125314561"
 
         private var engine = newEngine(kafkaEnvironment).apply {
             start(wait = true)

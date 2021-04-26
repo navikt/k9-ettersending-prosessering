@@ -60,7 +60,6 @@ internal class PdfV1Generator {
         private val soknadEttersendingTemplate = handlebars.compile(SOKNAD_ETTERSENDING)
 
         private val ZONE_ID = ZoneId.of("Europe/Oslo")
-        private val DATE_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy").withZone(ZONE_ID)
         private val DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm").withZone(ZONE_ID)
 
         private fun loadPng(name: String): String {

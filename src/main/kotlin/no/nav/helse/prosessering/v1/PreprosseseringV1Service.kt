@@ -2,14 +2,13 @@ package no.nav.helse.prosessering.v1
 
 import no.nav.helse.CorrelationId
 import no.nav.helse.dokument.DokumentService
-import no.nav.helse.prosessering.v1.felles.Metadata
-import no.nav.helse.prosessering.v1.felles.SoknadId
-import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
+import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.ettersending.reportMetrics
 import no.nav.helse.prosessering.v1.felles.AktørId
-import no.nav.k9.ettersendelse.Ettersendelse
+import no.nav.helse.prosessering.v1.felles.Metadata
+import no.nav.helse.prosessering.v1.felles.SoknadId
 import org.slf4j.LoggerFactory
 
 internal class PreprosseseringV1Service(
@@ -90,5 +89,6 @@ private fun Søknadstype.somDokumentbeskrivelse(): String {
         Søknadstype.OMP_UT_SNF -> "Ettersendelse omsorgspenger utbetaling selvstendig/frilanser"
         Søknadstype.OMP_UT_ARBEIDSTAKER -> "Ettersendelse omsorgspenger utbetaling arbeidstaker"
         Søknadstype.OMP_UTV_MA -> "Ettersendelse omsorgspenger regnet som alene"
+        Søknadstype.OMP_DELE_DAGER -> "Ettersendelse melding om deling av omsorgsdager"
     }
 }

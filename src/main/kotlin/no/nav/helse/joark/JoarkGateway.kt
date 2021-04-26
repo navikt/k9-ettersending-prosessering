@@ -9,8 +9,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.coroutines.awaitStringResponseResult
 import com.github.kittinunf.fuel.httpPost
-import io.ktor.http.HttpHeaders
-import io.ktor.http.Url
+import io.ktor.http.*
 import no.nav.helse.CorrelationId
 import no.nav.helse.HttpError
 import no.nav.helse.dusseldorf.ktor.client.buildURL
@@ -67,6 +66,11 @@ class JoarkGateway(
         pathParts = listOf("v1", "pleiepenge", "ettersending", "journalforing")
     ).toString()
 
+    private val journalførOmsorgspengerDeleDagerUrl = Url.buildURL(
+        baseUrl = baseUrl,
+        pathParts = listOf("v1", "omsorgsdagerdeling", "ettersending", "journalforing")
+    ).toString()
+
     private val objectMapper = configuredObjectMapper()
     private val cachedAccessTokenClient = CachedAccessTokenClient(accessTokenClient)
 
@@ -110,6 +114,7 @@ class JoarkGateway(
             OMP_UT_ARBEIDSTAKER -> journalførOmsorgspengeUtbetalingArbeidstakerUrl
             OMP_UT_SNF -> journalførOmsorgspengeUtbetalingSNFUrl
             OMP_UTV_MA -> journalførOmsorgspengerMidlertidigAleneUrl
+            OMP_DELE_DAGER -> journalførOmsorgspengerDeleDagerUrl
         }.byggHttpPost(contentStream, correlationId, authorizationHeader)
 
         val (request, response, result) = Operation.monitored(

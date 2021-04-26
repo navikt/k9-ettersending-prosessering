@@ -23,10 +23,10 @@ data class EttersendingV1(
 
 enum class Søknadstype(val pdfNavn: String){
     @JsonAlias("pleiepenger") //TODO 23.03.2021 - Alias for å støtte gammel versjon fra frontend
-    PLEIEPENGER_SYKT_BARN("pleiepenger sykt barn"),
+    PLEIEPENGER_SYKT_BARN("Pleiepenger sykt barn"),
     @JsonAlias("omsorgspenger") //TODO 23.03.2021 - Alias for å støtte gammel versjon fra frontend
-    OMP_UTV_KS("omsorgspenger utvidet rett"), // Omsorgspenger utvidet rett - kronisk syke eller funksjonshemming.
-    OMP_UT_SNF("omsorgspenger utbetaling snf"), // Omsorgspenger utbetaling SNF ytelse.
-    OMP_UT_ARBEIDSTAKER("omsorgspenger utbetaling arbeidstaker"), // Omsorgspenger utbetaling arbeidstaker ytelse.
-    OMP_UTV_MA("omsorgspenger midlertidig alene") // Omsorgspenger utvidet rett - midlertidig alene
+    OMP_UTV_KS("Ekstra omsorgsdager"), // Omsorgspenger utvidet rett - kronisk syke eller funksjonshemming.
+    OMP_UT_SNF("Omsorgspenger utbetaling selvstendig/frilanser"), // Omsorgspenger utbetaling SNF ytelse.
+    OMP_UT_ARBEIDSTAKER("Omsorgspenger utbetaling arbeidstaker"), // Omsorgspenger utbetaling arbeidstaker ytelse.
+    OMP_UTV_MA("Omsorgspenger regnet som alenee") // Omsorgspenger utvidet rett - midlertidig alene
 }

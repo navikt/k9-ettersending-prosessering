@@ -41,7 +41,7 @@ internal class PreprosseseringV1Service(
             pdf = soknadOppsummeringPdf,
             correlationId = correlationId,
             aktørId = søkerAktørId,
-            dokumentbeskrivelse = "Ettersendelse ${søknadstype.pdfNavn}"
+            dokumentbeskrivelse = søknadstype.somDokumentbeskrivelse()
         )
         logger.info("Mellomlagring av Oppsummerings-PDF OK")
 
@@ -77,5 +77,15 @@ internal class PreprosseseringV1Service(
         )
         preprossesertMeldingV1.reportMetrics()
         return preprossesertMeldingV1
+    }
+}
+
+private fun Søknadstype.somDokumentbeskrivelse(): String {
+    return when(this) {
+        Søknadstype.PLEIEPENGER_SYKT_BARN -> "Ettersendelse pleiepenger sykt barn"
+        Søknadstype.OMP_UTV_KS -> "Ettersendelse ekstra omsorgsdager"
+        Søknadstype.OMP_UT_SNF -> "Ettersendelse omsorgspenger utbetaling selvstendig/frilanser"
+        Søknadstype.OMP_UT_ARBEIDSTAKER -> "Ettersendelse omsorgspenger utbetaling arbeidstaker"
+        Søknadstype.OMP_UTV_MA -> "Ettersendelse omsorgspenger regnet som alene"
     }
 }

@@ -58,6 +58,15 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
+        id = "6-full-ettersending-melding-dele-dager"
+        pdf = generator.generateSoknadOppsummeringPdfEttersending(
+            melding = EttersendingUtils.defaultEttersending.copy(
+                søknadstype = Søknadstype.OMP_DELE_DAGER,
+                beskrivelse = null
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"

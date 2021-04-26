@@ -1,9 +1,7 @@
 package no.nav.helse.prosessering.v1.ettersending
 
 import com.fasterxml.jackson.annotation.JsonAlias
-import com.fasterxml.jackson.annotation.JsonValue
 import no.nav.helse.prosessering.v1.felles.Søker
-import no.nav.k9.ettersendelse.Ettersendelse
 import java.net.URI
 import java.time.ZonedDateTime
 
@@ -28,5 +26,6 @@ enum class Søknadstype(val pdfNavn: String){
     OMP_UTV_KS("Ekstra omsorgsdager"), // Omsorgspenger utvidet rett - kronisk syke eller funksjonshemming.
     OMP_UT_SNF("Omsorgspenger utbetaling selvstendig/frilanser"), // Omsorgspenger utbetaling SNF ytelse.
     OMP_UT_ARBEIDSTAKER("Omsorgspenger utbetaling arbeidstaker"), // Omsorgspenger utbetaling arbeidstaker ytelse.
-    OMP_UTV_MA("Omsorgspenger regnet som alenee") // Omsorgspenger utvidet rett - midlertidig alene
+    OMP_UTV_MA("Omsorgspenger regnet som alenee"), // Omsorgspenger utvidet rett - midlertidig alene
+    OMP_DELE_DAGER("Melding om deling av omsorgsdager")
 }

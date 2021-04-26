@@ -2,6 +2,7 @@ package no.nav.helse.prosessering.v1.ettersending
 
 import com.fasterxml.jackson.annotation.JsonAlias
 import no.nav.helse.prosessering.v1.felles.Søker
+import no.nav.k9.ettersendelse.Ettersendelse
 import java.net.URI
 import java.time.ZonedDateTime
 

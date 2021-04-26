@@ -60,7 +60,7 @@ class PdfV1GeneratorTest {
 
         id = "6-full-ettersending-melding-dele-dager"
         pdf = generator.generateSoknadOppsummeringPdfEttersending(
-            melding = EttersendingUtils.defaultEttersending.copy(
+            melding = EttersendingUtils.defaultEttersending().copy(
                 søknadstype = Søknadstype.OMP_DELE_DAGER,
                 beskrivelse = null
             )

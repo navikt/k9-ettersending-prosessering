@@ -1,6 +1,5 @@
 package no.nav.helse.prosessering.v1.ettersending
 
-import com.fasterxml.jackson.annotation.JsonAlias
 import no.nav.helse.prosessering.v1.felles.Søker
 import java.net.URI
 import java.time.ZonedDateTime
@@ -19,9 +18,7 @@ data class EttersendingV1(
 )
 
 enum class Søknadstype(val pdfNavn: String){
-    @JsonAlias("pleiepenger") //TODO 23.03.2021 - Alias for å støtte gammel versjon fra frontend
     PLEIEPENGER_SYKT_BARN("Pleiepenger sykt barn"),
-    @JsonAlias("omsorgspenger") //TODO 23.03.2021 - Alias for å støtte gammel versjon fra frontend
     OMP_UTV_KS("Ekstra omsorgsdager"), // Omsorgspenger utvidet rett - kronisk syke eller funksjonshemming.
     OMP_UT_SNF("Omsorgspenger utbetaling selvstendig/frilanser"), // Omsorgspenger utbetaling SNF ytelse.
     OMP_UT_ARBEIDSTAKER("Omsorgspenger utbetaling arbeidstaker"), // Omsorgspenger utbetaling arbeidstaker ytelse.

@@ -5,7 +5,6 @@ import no.nav.common.KafkaEnvironment
 import no.nav.helse.prosessering.v1.felles.Metadata
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP_ETTERSENDING
-import no.nav.helse.prosessering.v1.asynkron.Topics.JOURNALFORT_ETTERSENDING
 import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT_ETTERSENDING
 import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSSESERT_ETTERSENDING
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
@@ -34,7 +33,6 @@ object KafkaWrapper {
             topicNames = listOf(
                 MOTTATT_ETTERSENDING.name,
                 PREPROSSESERT_ETTERSENDING.name,
-                JOURNALFORT_ETTERSENDING.name,
                 CLEANUP_ETTERSENDING.name
             )
         )
@@ -68,13 +66,13 @@ private fun KafkaEnvironment.testProducerProperties(clientId: String): MutableMa
     }
 }
 
-fun KafkaEnvironment.journalføringsKonsumerEttersending(): KafkaConsumer<String, String> {
+fun KafkaEnvironment.cleanupKonsumerEttersending(): KafkaConsumer<String, String> {
     val consumer = KafkaConsumer(
         testConsumerProperties("EttersendingDagerKonsumer"),
         StringDeserializer(),
         StringDeserializer()
     )
-    consumer.subscribe(listOf(JOURNALFORT_ETTERSENDING.name))
+    consumer.subscribe(listOf(CLEANUP_ETTERSENDING.name))
     return consumer
 }
 
@@ -84,7 +82,7 @@ fun KafkaEnvironment.meldingEttersendingProducer() = KafkaProducer(
     MOTTATT_ETTERSENDING.serDes
 )
 
-fun KafkaConsumer<String, String>.hentJournalførtMeldingEttersending(
+fun KafkaConsumer<String, String>.hentCleanupMeldingEttersending(
     soknadId: String,
     maxWaitInSeconds: Long = 20
 ): String {
@@ -92,7 +90,7 @@ fun KafkaConsumer<String, String>.hentJournalførtMeldingEttersending(
     while (System.currentTimeMillis() < end) {
         seekToBeginning(assignment())
         val entries = poll(Duration.ofSeconds(1))
-            .records(JOURNALFORT_ETTERSENDING.name)
+            .records(CLEANUP_ETTERSENDING.name)
             .filter { it.key() == soknadId }
 
         if (entries.isNotEmpty()) {

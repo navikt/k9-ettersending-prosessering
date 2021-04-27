@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
+import no.nav.k9.ettersendelse.Ettersendelse
 
 class Søknadsformat {
     companion object {
@@ -15,7 +16,7 @@ class Søknadsformat {
             .configure(SerializationFeature.WRITE_DURATIONS_AS_TIMESTAMPS, false)
 
         internal fun somJsonEttersending(
-            ettersending: EttersendingV1
+            ettersending: Ettersendelse
         ): ByteArray {
             val node = objectMapper.valueToTree<ObjectNode>(ettersending)
             node.remove("vedlegg_urls")

@@ -29,7 +29,6 @@ internal class PreprosseseringV1Service(
         logger.info("Preprosseserer ettersending med søknadId: $søknadId")
 
         val correlationId = CorrelationId(metadata.correlationId)
-
         val søkerAktørId = AktørId(melding.søker.aktørId)
 
         logger.info("Genererer Oppsummerings-PDF av ettersending.")
@@ -46,9 +45,8 @@ internal class PreprosseseringV1Service(
         logger.info("Mellomlagring av Oppsummerings-PDF OK")
 
         logger.info("Mellomlagrer Oppsummerings-JSON")
-
         val soknadJsonUrl = dokumentService.lagreSoknadsMeldingEttersending(
-            ettersending = melding,
+            ettersending = melding.k9Format,
             aktørId = søkerAktørId,
             correlationId = correlationId,
             søknadstype = melding.søknadstype.pdfNavn
@@ -56,7 +54,6 @@ internal class PreprosseseringV1Service(
 
 
         logger.info("Mellomlagrer Oppsummerings-JSON OK.")
-
         val komplettDokumentUrls = mutableListOf(
             listOf(
                 soknadOppsummeringPdfUrl,

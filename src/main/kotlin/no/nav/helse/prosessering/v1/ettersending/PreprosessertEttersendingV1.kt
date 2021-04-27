@@ -16,8 +16,9 @@ data class PreprosessertEttersendingV1(
     val harBekreftetOpplysninger: Boolean,
     val beskrivelse: String?,
     val søknadstype: Søknadstype,
-    val titler: List<String>
-    ) {
+    val titler: List<String>,
+    val k9Format: Ettersendelse
+) {
     internal constructor(
         melding: EttersendingV1,
         dokumentUrls: List<List<URI>>,
@@ -32,7 +33,8 @@ data class PreprosessertEttersendingV1(
         søknadstype = melding.søknadstype,
         harForstattRettigheterOgPlikter = melding.harForståttRettigheterOgPlikter,
         harBekreftetOpplysninger = melding.harBekreftetOpplysninger,
-        titler = melding.titler
+        titler = melding.titler,
+        k9Format = melding.k9Format
     )
 }
 

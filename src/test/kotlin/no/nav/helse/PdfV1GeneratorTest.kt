@@ -16,7 +16,7 @@ class PdfV1GeneratorTest {
     private fun genererOppsummeringsPdfer(writeBytes: Boolean) {
         var id = "1-full-ettersending-omsorgspenger"
         var pdf = generator.generateSoknadOppsummeringPdfEttersending(
-            melding = EttersendingUtils.defaultEttersending.copy(
+            melding = EttersendingUtils.defaultEttersending().copy(
                 søknadstype = Søknadstype.OMP_UTV_KS,
                 beskrivelse = null
             )
@@ -25,7 +25,7 @@ class PdfV1GeneratorTest {
 
         id = "2-full-ettersending-pleiepenger"
         pdf = generator.generateSoknadOppsummeringPdfEttersending(
-            melding = EttersendingUtils.defaultEttersending.copy(
+            melding = EttersendingUtils.defaultEttersending().copy(
                 søknadstype = Søknadstype.PLEIEPENGER_SYKT_BARN
             )
         )
@@ -33,7 +33,7 @@ class PdfV1GeneratorTest {
 
         id = "3-full-ettersending-omsorgspenger-utbetaling-snf"
         pdf = generator.generateSoknadOppsummeringPdfEttersending(
-            melding = EttersendingUtils.defaultEttersending.copy(
+            melding = EttersendingUtils.defaultEttersending().copy(
                 søknadstype = Søknadstype.OMP_UT_SNF,
                 beskrivelse = null
             )
@@ -42,7 +42,7 @@ class PdfV1GeneratorTest {
 
         id = "4-full-ettersending-omsorgspenger-utbetaling-arbeidstaker"
         pdf = generator.generateSoknadOppsummeringPdfEttersending(
-            melding = EttersendingUtils.defaultEttersending.copy(
+            melding = EttersendingUtils.defaultEttersending().copy(
                 søknadstype = Søknadstype.OMP_UT_ARBEIDSTAKER,
                 beskrivelse = null
             )
@@ -51,7 +51,7 @@ class PdfV1GeneratorTest {
 
         id = "5-full-ettersending-omsorgspenger-midlertidig-alene"
         pdf = generator.generateSoknadOppsummeringPdfEttersending(
-            melding = EttersendingUtils.defaultEttersending.copy(
+            melding = EttersendingUtils.defaultEttersending().copy(
                 søknadstype = Søknadstype.OMP_UTV_MA,
                 beskrivelse = null
             )
@@ -60,7 +60,7 @@ class PdfV1GeneratorTest {
 
         id = "6-full-ettersending-melding-dele-dager"
         pdf = generator.generateSoknadOppsummeringPdfEttersending(
-            melding = EttersendingUtils.defaultEttersending.copy(
+            melding = EttersendingUtils.defaultEttersending().copy(
                 søknadstype = Søknadstype.OMP_DELE_DAGER,
                 beskrivelse = null
             )

@@ -1,6 +1,7 @@
 package no.nav.helse.prosessering.v1.ettersending
 
 import no.nav.helse.prosessering.v1.felles.Søker
+import no.nav.k9.ettersendelse.Ettersendelse
 import java.net.URI
 import java.time.ZonedDateTime
 
@@ -14,7 +15,8 @@ data class EttersendingV1(
     val harBekreftetOpplysninger: Boolean,
     val beskrivelse: String?,
     val søknadstype: Søknadstype,
-    val titler: List<String>
+    val titler: List<String>,
+    val k9Format: Ettersendelse
 )
 
 enum class Søknadstype(val pdfNavn: String){

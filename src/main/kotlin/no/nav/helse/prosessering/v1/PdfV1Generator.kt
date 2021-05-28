@@ -172,9 +172,9 @@ private fun List<String>.somMapTitler(): List<Map<String, Any?>> {
 
 private fun Søker.formatertNavn() = if (mellomnavn != null) "$fornavn $mellomnavn $etternavn" else "$fornavn $etternavn"
 
-fun String.capitalizeName(): String = split(" ").joinToString(" ") { it.toLowerCase().capitalize() }
+fun String.capitalizeName(): String = split(" ").joinToString(" ") { it.lowercase(Locale.getDefault()).capitalize() }
 
-private fun String.sprakTilTekst() = when (this.toLowerCase()) {
+private fun String.sprakTilTekst() = when (this.lowercase(Locale.getDefault())) {
     "nb" -> "bokmål"
     "nn" -> "nynorsk"
     else -> this

@@ -1,7 +1,7 @@
 package no.nav.helse
 
-import io.ktor.config.ApplicationConfig
-import io.ktor.util.KtorExperimentalAPI
+import io.ktor.config.*
+import io.ktor.util.*
 import no.nav.helse.dusseldorf.ktor.core.getOptionalString
 import no.nav.helse.dusseldorf.ktor.core.getRequiredList
 import no.nav.helse.dusseldorf.ktor.core.getRequiredString
@@ -10,6 +10,7 @@ import java.net.URI
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import java.util.*
 
 @KtorExperimentalAPI
 data class Configuration(private val config: ApplicationConfig) {
@@ -35,7 +36,9 @@ data class Configuration(private val config: ApplicationConfig) {
                 }
             }
 
-            val autoOffsetReset = when(val offsetReset = config.getOptionalString(key = "nav.kafka.auto_offset_reset", secret = false)?.toLowerCase()) {
+            val autoOffsetReset = when(val offsetReset =
+                config.getOptionalString(key = "nav.kafka.auto_offset_reset", secret = false)
+                    ?.lowercase(Locale.getDefault())) {
                 null -> "none"
                 "none" -> offsetReset
                 "latest" -> offsetReset

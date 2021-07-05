@@ -1,14 +1,15 @@
 {
   "app": "k9-ettersending-prosessering",
   "cluster": "dev-fss",
-  "namespace": "default",
+  "namespace": "dusseldorf",
   "team": "dusseldorf",
+  "tenant" : "trygdeetaten.no",
   "minReplicas": "1",
   "maxReplicas": "2",
   "ingresses": [
     "https://k9-ettersending-prosessering.nais.preprod.local"
   ],
-  "vaultKvPath": "/kv/preprod/fss/k9-ettersending-prosessering/default",
+  "vaultKvPath": "/kv/preprod/fss/k9-ettersending-prosessering/dusseldorf",
   "azureadKvPath": "/azuread/data/dev/creds/k9-ettersending-prosessering",
   "serviceuserKvPath": "/serviceuser/data/dev/srvk9ettersend-prs",
   "env": {

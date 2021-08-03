@@ -2,12 +2,12 @@ package no.nav.helse
 
 import no.nav.common.JAASCredential
 import no.nav.common.KafkaEnvironment
-import no.nav.helse.prosessering.v1.felles.Metadata
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP_ETTERSENDING
 import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT_ETTERSENDING
 import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSSESERT_ETTERSENDING
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
+import no.nav.helse.prosessering.v1.felles.Metadata
 import org.apache.kafka.clients.CommonClientConfigs
 import org.apache.kafka.clients.consumer.ConsumerConfig
 import org.apache.kafka.clients.consumer.KafkaConsumer
@@ -109,8 +109,7 @@ fun KafkaProducer<String, TopicEntry<EttersendingV1>>.leggTilMottak(soknad: Ette
             TopicEntry(
                 metadata = Metadata(
                     version = 1,
-                    correlationId = UUID.randomUUID().toString(),
-                    requestId = UUID.randomUUID().toString()
+                    correlationId = UUID.randomUUID().toString()
                 ),
                 data = soknad
             )

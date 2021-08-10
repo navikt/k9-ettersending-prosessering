@@ -27,7 +27,7 @@ spec:
 apiVersion: kafka.nais.io/v1
 kind: Topic
 metadata:
-  name: privat-k9-ettersending-preprossesert
+  name: privat-k9-ettersending-preprosessert
   namespace: dusseldorf
   labels:
     team: dusseldorf

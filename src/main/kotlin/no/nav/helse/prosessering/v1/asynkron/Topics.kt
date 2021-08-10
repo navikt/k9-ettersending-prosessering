@@ -5,9 +5,9 @@ import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
-import no.nav.helse.prosessering.v1.felles.Metadata
-import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
+import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
+import no.nav.helse.prosessering.v1.felles.Metadata
 import no.nav.k9.ettersendelse.Ettersendelse
 import org.apache.kafka.common.serialization.Deserializer
 import org.apache.kafka.common.serialization.Serdes
@@ -30,15 +30,15 @@ internal data class Topic<V>(
 
 internal object Topics {
     val MOTTATT_ETTERSENDING = Topic(
-        name = "privat-k9-ettersending-mottatt",
+        name = "dusseldorf.privat-k9-ettersending-mottatt",
         serDes = MottattSoknadSerDesEttersending()
     )
-    val PREPROSSESERT_ETTERSENDING = Topic(
-        name = "privat-k9-ettersending-preprossesert",
+    val PREPROSESSERT_ETTERSENDING = Topic(
+        name = "dusseldorf.privat-k9-ettersending-preprosessert",
         serDes = PreprossesertSerDesEttersending()
     )
     val CLEANUP_ETTERSENDING = Topic(
-        name = "privat-k9-ettersending-cleanup",
+        name = "dusseldorf.privat-k9-ettersending-cleanup",
         serDes = CleanupSerDesEttersending()
     )
 }

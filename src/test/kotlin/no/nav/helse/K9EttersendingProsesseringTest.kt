@@ -6,7 +6,6 @@ import io.ktor.config.*
 import io.ktor.http.*
 import io.ktor.server.engine.*
 import io.ktor.server.testing.*
-import io.ktor.util.*
 import io.prometheus.client.CollectorRegistry
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
@@ -24,10 +23,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-@KtorExperimentalAPI
 class K9EttersendingProsesseringTest {
 
-    @KtorExperimentalAPI
     private companion object {
 
         private val logger: Logger = LoggerFactory.getLogger(K9EttersendingProsesseringTest::class.java)

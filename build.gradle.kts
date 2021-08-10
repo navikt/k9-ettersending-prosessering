@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "2.1.6.0-1516d10"
+val dusseldorfKtorVersion = "2.1.6.2-6ce5eaa"
 val k9FormatVersion = "5.1.35"
 val ktorVersion = ext.get("ktorVersion").toString()
 val slf4jVersion = ext.get("slf4jVersion").toString()
@@ -22,7 +22,7 @@ plugins {
 
 buildscript {
     // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/1516d1006074d9459dbeaa4b355f619ee04a4b77/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/6ce5eaa4666595bb6b550fca5ca8bbdc242961a0/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
@@ -36,12 +36,13 @@ dependencies {
     implementation("com.github.kittinunf.fuel:fuel-coroutines:$fuelVersion"){
         exclude(group = "org.jetbrains.kotlinx", module = "kotlinx-coroutines-core")
     }
+    implementation(kotlin("stdlib-jdk8"))
 
     // K9-format
     implementation ( "no.nav.k9:ettersendelse:$k9FormatVersion")
 
     implementation ( "org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")
-    
+
     // Client
     implementation ( "no.nav.helse:dusseldorf-ktor-client:$dusseldorfKtorVersion")
     implementation ( "no.nav.helse:dusseldorf-oauth2-client:$dusseldorfKtorVersion")
@@ -63,7 +64,7 @@ dependencies {
         exclude(group = "org.eclipse.jetty")
     }
     testImplementation("org.skyscreamer:jsonassert:1.5.0")
-    implementation(kotlin("stdlib-jdk8"))
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }
 
 repositories {
@@ -109,5 +110,9 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "7.0.1"
+    gradleVersion = "7.1.1"
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }

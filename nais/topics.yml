@@ -16,7 +16,7 @@ spec:
     retentionHours: 730
   acl:
     - team: dusseldorf
-      application: k9-ettersending-api
+      application: k9-ettersending-mottak
       access: write
     - team: dusseldorf
       application: k9-ettersending-prosessering

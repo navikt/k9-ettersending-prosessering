@@ -6,7 +6,6 @@ import io.ktor.config.*
 import io.ktor.http.*
 import io.ktor.server.engine.*
 import io.ktor.server.testing.*
-import io.ktor.util.*
 import io.prometheus.client.CollectorRegistry
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
@@ -14,8 +13,7 @@ import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.k9.assertCleanupEttersendeFormat
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype
-import org.junit.AfterClass
-import org.junit.BeforeClass
+import org.junit.jupiter.api.AfterAll
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Duration
@@ -24,10 +22,8 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
-@KtorExperimentalAPI
 class K9EttersendingProsesseringTest {
 
-    @KtorExperimentalAPI
     private companion object {
 
         private val logger: Logger = LoggerFactory.getLogger(K9EttersendingProsesseringTest::class.java)
@@ -44,10 +40,8 @@ class K9EttersendingProsesseringTest {
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestProducerEttersending = kafkaEnvironment.meldingEttersendingProducer()
-
-        // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
-        private val gyldigFodselsnummerA = "02119970078"
         private val cleanupKonsumerEttersending = kafkaEnvironment.cleanupKonsumerEttersending()
+        private val k9DittnavVarselKonsumer = kafkaEnvironment.k9DittnavVarselKonsumer()
 
         private var engine = newEngine(kafkaEnvironment).apply {
             start(wait = true)
@@ -78,12 +72,7 @@ class K9EttersendingProsesseringTest {
             engine.start(wait = true)
         }
 
-        @BeforeClass
-        @JvmStatic
-        fun buildUp() {
-        }
-
-        @AfterClass
+        @AfterAll
         @JvmStatic
         fun tearDown() {
             logger.info("Tearing down")
@@ -123,6 +112,9 @@ class K9EttersendingProsesseringTest {
         cleanupKonsumerEttersending
             .hentCleanupMeldingEttersending(søknad.søknadId)
             .assertCleanupEttersendeFormat(søknadstype)
+
+        k9DittnavVarselKonsumer.hentK9Beskjed(søknad.søknadId)
+            .assertGyldigK9Beskjed(søknad)
     }
 
     @Test
@@ -136,6 +128,9 @@ class K9EttersendingProsesseringTest {
         cleanupKonsumerEttersending
             .hentCleanupMeldingEttersending(søknad.søknadId)
             .assertCleanupEttersendeFormat(søknadstype)
+
+        k9DittnavVarselKonsumer.hentK9Beskjed(søknad.søknadId)
+            .assertGyldigK9Beskjed(søknad)
     }
 
     @Test
@@ -156,6 +151,9 @@ class K9EttersendingProsesseringTest {
         cleanupKonsumerEttersending
             .hentCleanupMeldingEttersending(søknad.søknadId)
             .assertCleanupEttersendeFormat(søknadstype)
+
+        k9DittnavVarselKonsumer.hentK9Beskjed(søknad.søknadId)
+            .assertGyldigK9Beskjed(søknad)
     }
 
     private fun readyGir200HealthGir503() {

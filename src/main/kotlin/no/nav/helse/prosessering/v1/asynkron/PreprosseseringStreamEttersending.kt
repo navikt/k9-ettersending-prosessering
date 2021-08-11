@@ -6,11 +6,8 @@ import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
 import no.nav.helse.prosessering.v1.PreprosseseringV1Service
-import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
-import org.apache.kafka.streams.kstream.Consumed
-import org.apache.kafka.streams.kstream.Produced
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
 
@@ -43,25 +40,23 @@ internal class PreprosseseringStreamEttersending(
             val tilPreprossesert = Topics.PREPROSESSERT_ETTERSENDING
 
             builder
-                .stream<String, TopicEntry<EttersendingV1>>(
-                    fromMottatt.name,
-                    Consumed.with(fromMottatt.keySerde, fromMottatt.valueSerde)
-                )
-                .filter { _, entry -> entry.data.mottatt.erEtter(gittDato) }
+                .stream(fromMottatt.name, fromMottatt.consumed)
+                .filter { _, entry -> entry.deserialiserTilEttersending().mottatt.erEtter(gittDato) }
                 .filter { _, entry -> 1 == entry.metadata.version }
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info("Preprosesserer ettersending.")
+                        val ettersending = entry.deserialiserTilEttersending()
                         val preprossesertMelding = preprosseseringV1Service.preprosseserEttersending(
-                            melding = entry.data,
+                            melding = ettersending,
                             metadata = entry.metadata,
-                            søknadstype = entry.data.søknadstype
+                            søknadstype = ettersending.søknadstype
                         )
                         logger.info("Preprossesering av ettersending ferdig.")
-                        preprossesertMelding
+                        preprossesertMelding.serialiserTilData()
                     }
                 }
-                .to(tilPreprossesert.name, Produced.with(tilPreprossesert.keySerde, tilPreprossesert.valueSerde))
+                .to(tilPreprossesert.name, tilPreprossesert.produced)
             return builder.build()
         }
     }

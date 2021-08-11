@@ -14,7 +14,6 @@ import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.k9.assertCleanupEttersendeFormat
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import org.junit.jupiter.api.AfterAll
-import org.junit.jupiter.api.BeforeAll
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.time.Duration
@@ -41,10 +40,8 @@ class K9EttersendingProsesseringTest {
 
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestProducerEttersending = kafkaEnvironment.meldingEttersendingProducer()
-
-        // Se https://github.com/navikt/dusseldorf-ktor#f%C3%B8dselsnummer
-        private val gyldigFodselsnummerA = "02119970078"
         private val cleanupKonsumerEttersending = kafkaEnvironment.cleanupKonsumerEttersending()
+        private val k9DittnavVarselKonsumer = kafkaEnvironment.k9DittnavVarselKonsumer()
 
         private var engine = newEngine(kafkaEnvironment).apply {
             start(wait = true)
@@ -73,11 +70,6 @@ class K9EttersendingProsesseringTest {
             CollectorRegistry.defaultRegistry.clear()
             engine = newEngine(kafkaEnvironment)
             engine.start(wait = true)
-        }
-
-        @BeforeAll
-        @JvmStatic
-        fun buildUp() {
         }
 
         @AfterAll
@@ -120,6 +112,9 @@ class K9EttersendingProsesseringTest {
         cleanupKonsumerEttersending
             .hentCleanupMeldingEttersending(søknad.søknadId)
             .assertCleanupEttersendeFormat(søknadstype)
+
+        k9DittnavVarselKonsumer.hentK9Beskjed(søknad.søknadId)
+            .assertGyldigK9Beskjed(søknad)
     }
 
     @Test
@@ -133,6 +128,9 @@ class K9EttersendingProsesseringTest {
         cleanupKonsumerEttersending
             .hentCleanupMeldingEttersending(søknad.søknadId)
             .assertCleanupEttersendeFormat(søknadstype)
+
+        k9DittnavVarselKonsumer.hentK9Beskjed(søknad.søknadId)
+            .assertGyldigK9Beskjed(søknad)
     }
 
     @Test
@@ -153,6 +151,9 @@ class K9EttersendingProsesseringTest {
         cleanupKonsumerEttersending
             .hentCleanupMeldingEttersending(søknad.søknadId)
             .assertCleanupEttersendeFormat(søknadstype)
+
+        k9DittnavVarselKonsumer.hentK9Beskjed(søknad.søknadId)
+            .assertGyldigK9Beskjed(søknad)
     }
 
     private fun readyGir200HealthGir503() {

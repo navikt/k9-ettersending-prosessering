@@ -12,19 +12,25 @@ private object StreamCounter {
         .help("Teller for status av prosessering av meldinger på streams.")
         .labelNames("stream", "status")
         .register()
+
     internal fun ok(name: String) = counter.labels(name, "OK").inc()
     internal fun feil(name: String) = counter.labels(name, "FEIL").inc()
 }
 
-internal fun <BEFORE, AFTER>process(
+internal fun process(
     name: String,
     soknadId: String,
-    entry: TopicEntry<BEFORE>,
-    block: suspend() -> AFTER) : TopicEntry<AFTER> {
-    return runBlocking(MDCContext(mapOf(
-        "correlation_id" to entry.metadata.correlationId,
-        "soknad_id" to soknadId
-    ))) {
+    entry: TopicEntry,
+    block: suspend () -> Data
+): TopicEntry {
+    return runBlocking(
+        MDCContext(
+            mapOf(
+                "correlation_id" to entry.metadata.correlationId,
+                "soknad_id" to soknadId
+            )
+        )
+    ) {
         val processed = try {
             Retry.retry(
                 operation = name,

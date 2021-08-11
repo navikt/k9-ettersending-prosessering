@@ -2,10 +2,13 @@ package no.nav.helse
 
 import no.nav.common.JAASCredential
 import no.nav.common.KafkaEnvironment
+import no.nav.helse.prosessering.v1.asynkron.Data
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP_ETTERSENDING
+import no.nav.helse.prosessering.v1.asynkron.Topics.K9_DITTNAV_VARSEL
 import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT_ETTERSENDING
 import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSESSERT_ETTERSENDING
+import no.nav.helse.prosessering.v1.asynkron.k9EttersendingKonfigurertMapper
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.helse.prosessering.v1.felles.Metadata
 import org.apache.kafka.clients.CommonClientConfigs
@@ -33,7 +36,8 @@ object KafkaWrapper {
             topicNames = listOf(
                 MOTTATT_ETTERSENDING.name,
                 PREPROSESSERT_ETTERSENDING.name,
-                CLEANUP_ETTERSENDING.name
+                CLEANUP_ETTERSENDING.name,
+                K9_DITTNAV_VARSEL.name
             )
         )
         return kafkaEnvironment
@@ -76,6 +80,16 @@ fun KafkaEnvironment.cleanupKonsumerEttersending(): KafkaConsumer<String, String
     return consumer
 }
 
+fun KafkaEnvironment.k9DittnavVarselKonsumer(): KafkaConsumer<String, String> {
+    val consumer = KafkaConsumer(
+        testConsumerProperties("K9DittnavVarselKonsumer"),
+        StringDeserializer(),
+        StringDeserializer()
+    )
+    consumer.subscribe(listOf(K9_DITTNAV_VARSEL.name))
+    return consumer
+}
+
 fun KafkaEnvironment.meldingEttersendingProducer() = KafkaProducer(
     testProducerProperties("K9EttersendingProsesseringTestProducer"),
     MOTTATT_ETTERSENDING.keySerializer,
@@ -101,7 +115,26 @@ fun KafkaConsumer<String, String>.hentCleanupMeldingEttersending(
     throw IllegalStateException("Fant ikke opprettet oppgave for søknad $soknadId etter $maxWaitInSeconds sekunder.")
 }
 
-fun KafkaProducer<String, TopicEntry<EttersendingV1>>.leggTilMottak(soknad: EttersendingV1) {
+fun KafkaConsumer<String, String>.hentK9Beskjed(
+    soknadId: String,
+    maxWaitInSeconds: Long = 20
+): String {
+    val end = System.currentTimeMillis() + Duration.ofSeconds(maxWaitInSeconds).toMillis()
+    while (System.currentTimeMillis() < end) {
+        seekToBeginning(assignment())
+        val entries = poll(Duration.ofSeconds(5))
+            .records(K9_DITTNAV_VARSEL.name)
+            .filter { it.key() == soknadId }
+
+        if (entries.isNotEmpty()) {
+            assertEquals(1, entries.size)
+            return entries.first().value()
+        }
+    }
+    throw IllegalStateException("Fant ikke opprettet K9Beskjed for søknad $soknadId etter $maxWaitInSeconds sekunder.")
+}
+
+fun KafkaProducer<String, TopicEntry>.leggTilMottak(soknad: EttersendingV1) {
     send(
         ProducerRecord(
             MOTTATT_ETTERSENDING.name,
@@ -111,10 +144,11 @@ fun KafkaProducer<String, TopicEntry<EttersendingV1>>.leggTilMottak(soknad: Ette
                     version = 1,
                     correlationId = UUID.randomUUID().toString()
                 ),
-                data = soknad
+                data = Data(k9EttersendingKonfigurertMapper().writeValueAsString(soknad))
             )
         )
     ).get()
 }
+
 fun KafkaEnvironment.username() = username
 fun KafkaEnvironment.password() = password

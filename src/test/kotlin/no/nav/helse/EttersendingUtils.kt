@@ -3,15 +3,19 @@ package no.nav.helse
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype
+import no.nav.helse.prosessering.v1.felles.DAGER_SYNLIG_K9BESKJED
 import no.nav.helse.prosessering.v1.felles.Søker
+import no.nav.helse.prosessering.v1.felles.somK9BeskjedYtelse
 import no.nav.k9.ettersendelse.Ettersendelse
 import no.nav.k9.ettersendelse.Ytelse
 import no.nav.k9.søknad.felles.type.NorskIdentitetsnummer
 import no.nav.k9.søknad.felles.type.SøknadId
+import org.json.JSONObject
 import java.net.URI
 import java.time.LocalDate
 import java.time.ZonedDateTime
 import java.util.*
+import kotlin.test.assertEquals
 
 internal object EttersendingUtils {
     internal val objectMapper = jacksonObjectMapper().k9EttersendingKonfigurert()
@@ -48,8 +52,16 @@ internal object EttersendingUtils {
             .ytelse(Ytelse.OMP_UTV_KS)
             .build()
     )
-
-
 }
 
 internal fun EttersendingV1.somJson() = EttersendingUtils.objectMapper.writeValueAsString(this)
+
+internal fun String.assertGyldigK9Beskjed(ettersending: EttersendingV1) {
+    val k9Beskjed = JSONObject(this)
+    val ytelse = ettersending.søknadstype.somK9BeskjedYtelse()
+
+    assertEquals(ettersending.søknadId, k9Beskjed.getString("grupperingsId"))
+    assertEquals(ytelse.tekst, k9Beskjed.getString("tekst"))
+    assertEquals(ytelse.toString(), k9Beskjed.getString("ytelse"))
+    assertEquals(DAGER_SYNLIG_K9BESKJED, k9Beskjed.getLong("dagerSynlig"))
+}

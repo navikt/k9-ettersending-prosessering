@@ -1,5 +1,6 @@
 package no.nav.helse.prosessering.v1.ettersending
 
+import com.fasterxml.jackson.annotation.JsonAlias
 import no.nav.helse.prosessering.v1.felles.Søker
 import no.nav.k9.ettersendelse.Ettersendelse
 import java.net.URI
@@ -10,6 +11,7 @@ data class EttersendingV1(
     val søknadId: String,
     val mottatt: ZonedDateTime,
     val språk: String? = "nb",
+    @JsonAlias("vedlegg") // TODO: 23/08/2021 Fix
     val vedleggUrls: List<URI>,
     val harForståttRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,

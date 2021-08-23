@@ -1,79 +1,70 @@
-package no.nav.helse.dokument
+package no.nav.helse.k9mellomlagring
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
-import no.nav.helse.prosessering.v1.felles.AktørId
 import no.nav.k9.ettersendelse.Ettersendelse
-import no.nav.k9.søknad.JsonUtils
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.net.URI
 
-private val logger: Logger = LoggerFactory.getLogger("nav.DokumentService")
-
-class DokumentService(
-    private val dokumentGateway: DokumentGateway
+class K9MellomlagringService(
+    val k9MellomlagringGateway: K9MellomlagringGateway
 ) {
+
+    private val logger: Logger = LoggerFactory.getLogger(K9MellomlagringService::class.java)
+
     private suspend fun lagreDokument(
-        dokument: DokumentGateway.Dokument,
-        aktørId: AktørId,
+        dokument: Dokument,
         correlationId: CorrelationId
     ) : URI {
-        return dokumentGateway.lagreDokmenter(
+        return k9MellomlagringGateway.lagreDokmenter(
             dokumenter = setOf(dokument),
-            correlationId = correlationId,
-            aktørId = aktørId
+            correlationId = correlationId
         ).first()
     }
 
     internal suspend fun lagreSoknadsOppsummeringPdf(
-        pdf : ByteArray,
-        aktørId: AktørId,
+        pdf: ByteArray,
+        dokumentEier: DokumentEier,
         correlationId: CorrelationId,
         dokumentbeskrivelse: String
-    ) : URI {
+    ): URI {
         return lagreDokument(
-            dokument = DokumentGateway.Dokument(
+            dokument = Dokument(
+                eier = dokumentEier,
                 content = pdf,
                 contentType = "application/pdf",
                 title = dokumentbeskrivelse
             ),
-            aktørId = aktørId,
             correlationId = correlationId
         )
     }
 
-    internal suspend fun lagreSoknadsMeldingEttersending(
+    internal suspend fun lagreEttersendingSomJson(
         ettersending: Ettersendelse,
-        aktørId: AktørId,
+        dokumentEier: DokumentEier,
         correlationId: CorrelationId,
         søknadstype: String
     ) : URI {
         return lagreDokument(
-            dokument = DokumentGateway.Dokument(
+            dokument = Dokument(
+                eier = dokumentEier,
                 content = Søknadsformat.somJsonEttersending(ettersending),
                 contentType = "application/json",
                 title = "Ettersendelse $søknadstype som JSON"
             ),
-            aktørId = aktørId,
             correlationId = correlationId
         )
     }
 
     internal suspend fun slettDokumeter(
         urlBolks: List<List<URI>>,
-        aktørId: AktørId,
+        dokumentEier: DokumentEier,
         correlationId : CorrelationId
     ) {
-        val urls = mutableListOf<URI>()
-        urlBolks.forEach { urls.addAll(it) }
-
-        logger.trace("Sletter ${urls.size} dokumenter")
-        dokumentGateway.slettDokmenter(
-            urls = urls,
-            aktørId = aktørId,
+        k9MellomlagringGateway.slettDokmenter(
+            urls = urlBolks.flatten(),
+            dokumentEier = dokumentEier,
             correlationId = correlationId
         )
     }
 }
-

@@ -1,11 +1,10 @@
-package no.nav.helse.dokument
+package no.nav.helse.k9mellomlagring
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.databind.node.ObjectNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import no.nav.helse.dusseldorf.ktor.jackson.dusseldorfConfigured
-import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.k9.ettersendelse.Ettersendelse
 
 class Søknadsformat {

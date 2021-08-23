@@ -1,19 +1,19 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.dokument.DokumentService
+import no.nav.helse.k9mellomlagring.DokumentEier
+import no.nav.helse.k9mellomlagring.K9MellomlagringService
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.ettersending.reportMetrics
-import no.nav.helse.prosessering.v1.felles.AktørId
 import no.nav.helse.prosessering.v1.felles.Metadata
 import no.nav.helse.prosessering.v1.felles.SoknadId
 import org.slf4j.LoggerFactory
 
 internal class PreprosseseringV1Service(
     private val pdfV1Generator: PdfV1Generator,
-    private val dokumentService: DokumentService
+    private val dokumentService: K9MellomlagringService
 ) {
 
     private companion object {
@@ -29,7 +29,7 @@ internal class PreprosseseringV1Service(
         logger.info("Preprosseserer ettersending med søknadId: $søknadId")
 
         val correlationId = CorrelationId(metadata.correlationId)
-        val søkerAktørId = AktørId(melding.søker.aktørId)
+        val dokumentEier = DokumentEier(melding.søker.fødselsnummer)
 
         logger.info("Genererer Oppsummerings-PDF av ettersending.")
         val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdfEttersending(melding)
@@ -39,15 +39,15 @@ internal class PreprosseseringV1Service(
         val soknadOppsummeringPdfUrl = dokumentService.lagreSoknadsOppsummeringPdf(
             pdf = soknadOppsummeringPdf,
             correlationId = correlationId,
-            aktørId = søkerAktørId,
+            dokumentEier = dokumentEier,
             dokumentbeskrivelse = søknadstype.somDokumentbeskrivelse()
         )
         logger.info("Mellomlagring av Oppsummerings-PDF OK")
 
         logger.info("Mellomlagrer Oppsummerings-JSON")
-        val soknadJsonUrl = dokumentService.lagreSoknadsMeldingEttersending(
+        val soknadJsonUrl = dokumentService.lagreEttersendingSomJson(
             ettersending = melding.k9Format,
-            aktørId = søkerAktørId,
+            dokumentEier = dokumentEier,
             correlationId = correlationId,
             søknadstype = melding.søknadstype.pdfNavn
         )
@@ -71,8 +71,7 @@ internal class PreprosseseringV1Service(
 
         val preprossesertMeldingV1 = PreprosessertEttersendingV1(
             melding = melding,
-            dokumentUrls = komplettDokumentUrls.toList(),
-            sokerAktoerId = søkerAktørId
+            dokumentUrls = komplettDokumentUrls.toList()
         )
         preprossesertMeldingV1.reportMetrics()
         return preprossesertMeldingV1

@@ -17,7 +17,7 @@ data class EttersendingV1(
     val harBekreftetOpplysninger: Boolean,
     val beskrivelse: String?,
     val søknadstype: Søknadstype,
-    val titler: List<String>,
+    val titler: List<String> = listOf("TEST TITTEL"), // TODO: 23/08/2021 FIX
     val k9Format: Ettersendelse
 )
 

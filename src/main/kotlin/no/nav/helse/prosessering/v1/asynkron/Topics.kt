@@ -27,10 +27,17 @@ internal object Topics {
         name = "dusseldorf.privat-k9-ettersending-mottatt",
         serDes = SerDes()
     )
+
+    val MOTTATT_ETTERSENDING_V2 = Topic(
+        name = "dusseldorf.privat-k9-ettersending-mottatt-v2",
+        serDes = SerDes()
+    )
+
     val PREPROSESSERT_ETTERSENDING = Topic(
         name = "dusseldorf.privat-k9-ettersending-preprosessert",
         serDes = SerDes()
     )
+
     val CLEANUP_ETTERSENDING = Topic(
         name = "dusseldorf.privat-k9-ettersending-cleanup",
         serDes = SerDes()

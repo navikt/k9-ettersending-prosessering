@@ -36,7 +36,7 @@ internal class PreprosseseringStreamEttersending(
 
         private fun topology(preprosseseringV1Service: PreprosseseringV1Service, gittDato: ZonedDateTime): Topology {
             val builder = StreamsBuilder()
-            val fromMottatt = Topics.MOTTATT_ETTERSENDING
+            val fromMottatt = Topics.MOTTATT_ETTERSENDING_V2
             val tilPreprossesert = Topics.PREPROSESSERT_ETTERSENDING
 
             builder

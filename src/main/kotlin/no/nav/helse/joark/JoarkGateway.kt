@@ -22,7 +22,6 @@ import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype.*
-import no.nav.helse.prosessering.v1.felles.AktørId
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
@@ -86,7 +85,6 @@ class JoarkGateway(
     }
 
     suspend fun journalførEttersending(
-        aktørId: AktørId,
         norskIdent: String,
         søkerNavn: Navn,
         mottatt: ZonedDateTime,
@@ -98,7 +96,6 @@ class JoarkGateway(
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
 
         val joarkRequest = JoarkRequest(
-            aktoerId = aktørId.id,
             norskIdent = norskIdent,
             mottatt = mottatt,
             søkerNavn = søkerNavn,
@@ -160,7 +157,6 @@ private fun String.byggHttpPost(
 }
 
 private data class JoarkRequest(
-    @JsonProperty("aktoer_id") val aktoerId: String,
     @JsonProperty("norsk_ident") val norskIdent: String,
     val mottatt: ZonedDateTime,
     @JsonProperty("soker_navn") val søkerNavn: Navn,

@@ -8,7 +8,6 @@ import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
-import no.nav.helse.prosessering.v1.felles.AktørId
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
@@ -55,7 +54,6 @@ internal class JournalføringStreamEttersending(
 
                         val journaPostId = joarkGateway.journalførEttersending(
                             mottatt = preprosessertEttersending.mottatt,
-                            aktørId = AktørId(preprosessertEttersending.søker.aktørId),
                             norskIdent = preprosessertEttersending.søker.fødselsnummer,
                             søkerNavn = Navn(
                                 fornavn = preprosessertEttersending.søker.fornavn,

@@ -46,11 +46,9 @@ internal class PreprosseseringStreamEttersending(
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info("Preprosesserer ettersending.")
-                        val ettersending = entry.deserialiserTilEttersending()
-                        val preprossesertMelding = preprosseseringV1Service.preprosseserEttersending(
-                            melding = ettersending,
-                            metadata = entry.metadata,
-                            søknadstype = ettersending.søknadstype
+                        val preprossesertMelding = preprosseseringV1Service.preprosesserEttersending(
+                            ettersending = entry.deserialiserTilEttersending(),
+                            metadata = entry.metadata
                         )
                         logger.info("Preprossesering av ettersending ferdig.")
                         preprossesertMelding.serialiserTilData()

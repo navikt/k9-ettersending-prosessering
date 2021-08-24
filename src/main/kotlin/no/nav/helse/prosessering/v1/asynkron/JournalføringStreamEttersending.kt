@@ -3,7 +3,6 @@ package no.nav.helse.prosessering.v1.asynkron
 import no.nav.helse.CorrelationId
 import no.nav.helse.erEtter
 import no.nav.helse.joark.JoarkGateway
-import no.nav.helse.joark.Navn
 import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
@@ -49,22 +48,14 @@ internal class JournalføringStreamEttersending(
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         val preprosessertEttersending = entry.deserialiserTilPreprosessertMelding()
-                        val dokumenter = preprosessertEttersending.dokumentUrls
-                        logger.info("Journalfører dokumenter: {}", dokumenter)
 
+                        logger.info("Journalfører dokumenter: {}", preprosessertEttersending.dokumentUrls)
                         val journaPostId = joarkGateway.journalførEttersending(
-                            mottatt = preprosessertEttersending.mottatt,
-                            norskIdent = preprosessertEttersending.søker.fødselsnummer,
-                            søkerNavn = Navn(
-                                fornavn = preprosessertEttersending.søker.fornavn,
-                                mellomnavn = preprosessertEttersending.søker.mellomnavn,
-                                etternavn = preprosessertEttersending.søker.etternavn
-                            ),
                             correlationId = CorrelationId(entry.metadata.correlationId),
-                            dokumenter = dokumenter,
-                            søknadstype = preprosessertEttersending.søknadstype
+                            preprosessertEttersending = preprosessertEttersending
                         )
                         logger.info("Dokumenter journalført med ID = ${journaPostId.journalpostId}.")
+
                         val journalfort = JournalfortEttersending(
                             journalpostId = journaPostId.journalpostId,
                             søknad = preprosessertEttersending.k9Format

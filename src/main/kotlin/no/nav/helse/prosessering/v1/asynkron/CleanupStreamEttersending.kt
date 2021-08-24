@@ -55,6 +55,7 @@ internal class CleanupStreamEttersending(
                             dokumentEier = DokumentEier(cleanupEttersending.melding.søker.fødselsnummer)
                         )
                         logger.info("Dokumenter slettet.")
+
                         val k9beskjed = cleanupEttersending.tilK9Beskjed()
                         logger.info("Sender K9Beskjed viderer til ${tilK9DittnavVarsel.name}")
                         k9beskjed.serialiserTilData()

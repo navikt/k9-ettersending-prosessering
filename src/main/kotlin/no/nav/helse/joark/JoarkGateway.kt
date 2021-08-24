@@ -20,7 +20,7 @@ import no.nav.helse.dusseldorf.ktor.health.UnHealthy
 import no.nav.helse.dusseldorf.ktor.metrics.Operation
 import no.nav.helse.dusseldorf.oauth2.client.AccessTokenClient
 import no.nav.helse.dusseldorf.oauth2.client.CachedAccessTokenClient
-import no.nav.helse.prosessering.v1.ettersending.Søknadstype
+import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -85,27 +85,27 @@ class JoarkGateway(
     }
 
     suspend fun journalførEttersending(
-        norskIdent: String,
-        søkerNavn: Navn,
-        mottatt: ZonedDateTime,
-        dokumenter: List<List<URI>>,
         correlationId: CorrelationId,
-        søknadstype: Søknadstype
+        preprosessertEttersending: PreprosessertEttersendingV1
     ): JournalPostId {
 
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
 
         val joarkRequest = JoarkRequest(
-            norskIdent = norskIdent,
-            mottatt = mottatt,
-            søkerNavn = søkerNavn,
-            dokumenter = dokumenter
+            norskIdent = preprosessertEttersending.søker.fødselsnummer,
+            mottatt = preprosessertEttersending.mottatt,
+            søkerNavn = Navn(
+                fornavn = preprosessertEttersending.søker.fornavn,
+                mellomnavn = preprosessertEttersending.søker.mellomnavn,
+                etternavn = preprosessertEttersending.søker.etternavn
+            ),
+            dokumenter = preprosessertEttersending.dokumentUrls
         )
 
         val body = objectMapper.writeValueAsBytes(joarkRequest)
         val contentStream = { ByteArrayInputStream(body) }
 
-        val httpRequest = when (søknadstype) {
+        val httpRequest = when (preprosessertEttersending.søknadstype) {
             OMP_UTV_KS -> journalførOmsorgspengerUrl
             PLEIEPENGER_SYKT_BARN ->  journalførPleiepengerUrl
             OMP_UT_ARBEIDSTAKER -> journalførOmsorgspengeUtbetalingArbeidstakerUrl

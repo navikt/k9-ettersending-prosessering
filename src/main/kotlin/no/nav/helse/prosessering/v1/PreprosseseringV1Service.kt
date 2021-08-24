@@ -15,7 +15,7 @@ import org.slf4j.LoggerFactory
 
 internal class PreprosseseringV1Service(
     private val pdfV1Generator: PdfV1Generator,
-    private val dokumentService: K9MellomlagringService
+    private val k9MellomlagringService: K9MellomlagringService
 ) {
      private val logger = LoggerFactory.getLogger(PreprosseseringV1Service::class.java)
 
@@ -33,7 +33,7 @@ internal class PreprosseseringV1Service(
         val oppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdfEttersending(ettersending)
 
         logger.info("Mellomlagrer Oppsummerings-PDF.")
-        val oppsummeringPdfUrl = dokumentService.lagreDokument(
+        val oppsummeringPdfUrl = k9MellomlagringService.lagreDokument(
             dokument = Dokument(
                 eier = dokumentEier,
                 content = oppsummeringPdf,
@@ -44,7 +44,7 @@ internal class PreprosseseringV1Service(
         )
 
         logger.info("Mellomlagrer Oppsummerings-JSON")
-        val ettersendingJsonUrl = dokumentService.lagreDokument(
+        val ettersendingJsonUrl = k9MellomlagringService.lagreDokument(
             dokument = Dokument(
                 eier = dokumentEier,
                 content = Søknadsformat.somJsonEttersending(ettersending.k9Format),

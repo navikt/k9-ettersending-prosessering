@@ -16,14 +16,14 @@ import java.time.ZonedDateTime
 
 internal class CleanupStreamEttersending(
     kafkaConfig: KafkaConfig,
-    dokumentService: K9MellomlagringService,
+    k9MellomlagringService: K9MellomlagringService,
     datoMottattEtter: ZonedDateTime
 ) {
     private val stream = ManagedKafkaStreams(
         name = NAME,
         properties = kafkaConfig.stream(NAME),
         topology = topology(
-            dokumentService,
+            k9MellomlagringService,
             datoMottattEtter
         ),
         unreadyAfterStreamStoppedIn = kafkaConfig.unreadyAfterStreamStoppedIn
@@ -36,7 +36,7 @@ internal class CleanupStreamEttersending(
         private const val NAME = "CleanupV1Ettersending"
         private val logger = LoggerFactory.getLogger("no.nav.$NAME.topology")
 
-        private fun topology(dokumentService: K9MellomlagringService, gittDato: ZonedDateTime): Topology {
+        private fun topology(k9MellomlagringService: K9MellomlagringService, gittDato: ZonedDateTime): Topology {
             val builder = StreamsBuilder()
             val fraCleanup = Topics.CLEANUP_ETTERSENDING
             val tilK9DittnavVarsel = Topics.K9_DITTNAV_VARSEL
@@ -49,7 +49,7 @@ internal class CleanupStreamEttersending(
                     process(NAME, soknadId, entry) {
                         logger.info("Sletter ettersending dokumenter.")
                         val cleanupEttersending = entry.deserialiserTilCleanup()
-                        dokumentService.slettDokumeter(
+                        k9MellomlagringService.slettDokumeter(
                             urlBolks = cleanupEttersending.melding.dokumentUrls,
                             correlationId = CorrelationId(entry.metadata.correlationId),
                             dokumentEier = DokumentEier(cleanupEttersending.melding.søker.fødselsnummer)

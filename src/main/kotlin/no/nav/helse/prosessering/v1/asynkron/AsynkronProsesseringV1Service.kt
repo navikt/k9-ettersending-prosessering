@@ -11,7 +11,7 @@ internal class AsynkronProsesseringV1Service(
     kafkaConfig: KafkaConfig,
     preprosseseringV1Service: PreprosseseringV1Service,
     joarkGateway: JoarkGateway,
-    dokumentService: K9MellomlagringService,
+    k9MellomlagringService: K9MellomlagringService,
     preprosesserMeldingerMottattEtter: ZonedDateTime,
     cleanupMeldingDatoMottattEtter: ZonedDateTime,
     journalførMeldingDatoMottattEtter: ZonedDateTime
@@ -38,7 +38,7 @@ internal class AsynkronProsesseringV1Service(
     private val cleanupStreamEttersending =
         CleanupStreamEttersending(
             kafkaConfig = kafkaConfig,
-            dokumentService = dokumentService,
+            k9MellomlagringService = k9MellomlagringService,
             datoMottattEtter = cleanupMeldingDatoMottattEtter
         )
 

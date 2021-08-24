@@ -62,7 +62,7 @@ fun Application.k9EttersendingProsessering() {
 
     val preprosseseringV1Service = PreprosseseringV1Service(
         pdfV1Generator = PdfV1Generator(),
-        dokumentService = k9MellomlagringService
+        k9MellomlagringService = k9MellomlagringService
     )
     val joarkGateway = JoarkGateway(
         baseUrl = configuration.getk9JoarkBaseUrl(),
@@ -74,7 +74,7 @@ fun Application.k9EttersendingProsessering() {
         kafkaConfig = configuration.getKafkaConfig(),
         preprosseseringV1Service = preprosseseringV1Service,
         joarkGateway = joarkGateway,
-        dokumentService = k9MellomlagringService,
+        k9MellomlagringService = k9MellomlagringService,
         preprosesserMeldingerMottattEtter = configuration.soknadDatoMottattEtter(),
         cleanupMeldingDatoMottattEtter = configuration.cleanupMeldingDatoMottattEtter(),
         journalførMeldingDatoMottattEtter = configuration.journalførMeldingDatoMottattEtter()

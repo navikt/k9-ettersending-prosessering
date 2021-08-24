@@ -66,7 +66,7 @@ internal class PreprosseseringV1Service(
             ettersending.vedleggUrls.forEach { komplettDokumentUrls.add(listOf(it)) }
         }
 
-        logger.info("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
+        logger.info("Totalt ${komplettDokumentUrls.size} dokumentbolker med totalt ${komplettDokumentUrls.flatten().size} dokumenter.")
 
         val preprossesertMeldingV1 = PreprosessertEttersendingV1(
             melding = ettersending,

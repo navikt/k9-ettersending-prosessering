@@ -36,9 +36,6 @@ internal class KafkaConfig(
 
     internal fun stream(name: String) = streams.apply {
         put(APPLICATION_ID_CONFIG, "$ID_PREFIX$name")
-        if(name == "PreprosesseringV1Ettersending") {
-            this.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "earliest") // TODO: 25/08/2021 Fjerne så fort mottatt var fått en ettersending og offset
-        }
     }
 }
 

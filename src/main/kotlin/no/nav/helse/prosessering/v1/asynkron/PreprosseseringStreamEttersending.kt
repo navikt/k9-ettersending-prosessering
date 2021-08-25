@@ -10,6 +10,7 @@ import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
+import java.util.*
 
 internal class PreprosseseringStreamEttersending(
     preprosseseringV1Service: PreprosseseringV1Service,
@@ -55,7 +56,8 @@ internal class PreprosseseringStreamEttersending(
                     }
                 }
                 .to(tilPreprossesert.name, tilPreprossesert.produced)
-            return builder.build()
+            return builder.build(Properties()
+            )
         }
     }
 

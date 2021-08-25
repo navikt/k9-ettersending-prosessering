@@ -44,7 +44,7 @@ object TestConfiguration {
 
         kafkaEnvironment?.let {
             map["nav.kafka.bootstrap_servers"] = it.brokersURL
-            map["nav.kafka.auto_offset_reset"] = "latest"
+            map["nav.kafka.auto_offset_reset"] = "earliest"
         }
 
         return map.toMap()

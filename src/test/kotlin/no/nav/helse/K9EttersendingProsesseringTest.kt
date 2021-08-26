@@ -32,7 +32,7 @@ class K9EttersendingProsesseringTest {
             .withNaisStsSupport()
             .withAzureSupport()
             .build()
-            .stubK9DokumentHealth()
+            .stubK9MellomlagringHealth()
             .stubK9JoarkHealth()
             .stubJournalfor()
             .stubLagreDokument()

@@ -1,78 +1,76 @@
 package no.nav.helse.prosessering.v1
 
 import no.nav.helse.CorrelationId
-import no.nav.helse.dokument.DokumentService
+import no.nav.helse.k9mellomlagring.Dokument
+import no.nav.helse.k9mellomlagring.DokumentEier
+import no.nav.helse.k9mellomlagring.K9MellomlagringService
+import no.nav.helse.k9mellomlagring.Søknadsformat
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.PreprosessertEttersendingV1
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import no.nav.helse.prosessering.v1.ettersending.reportMetrics
-import no.nav.helse.prosessering.v1.felles.AktørId
 import no.nav.helse.prosessering.v1.felles.Metadata
 import no.nav.helse.prosessering.v1.felles.SoknadId
 import org.slf4j.LoggerFactory
 
 internal class PreprosseseringV1Service(
     private val pdfV1Generator: PdfV1Generator,
-    private val dokumentService: DokumentService
+    private val k9MellomlagringService: K9MellomlagringService
 ) {
+     private val logger = LoggerFactory.getLogger(PreprosseseringV1Service::class.java)
 
-    private companion object {
-        private val logger = LoggerFactory.getLogger(PreprosseseringV1Service::class.java)
-    }
-
-    internal suspend fun preprosseserEttersending(
-        melding: EttersendingV1,
-        metadata: Metadata,
-        søknadstype: Søknadstype
+    internal suspend fun preprosesserEttersending(
+        ettersending: EttersendingV1,
+        metadata: Metadata
     ): PreprosessertEttersendingV1 {
-        val søknadId = SoknadId(melding.søknadId)
-        logger.info("Preprosseserer ettersending med søknadId: $søknadId")
+        val søknadId = SoknadId(ettersending.søknadId)
+        logger.info("Preprosesserer ettersending med søknadId: $søknadId")
 
         val correlationId = CorrelationId(metadata.correlationId)
-        val søkerAktørId = AktørId(melding.søker.aktørId)
+        val dokumentEier = DokumentEier(ettersending.søker.fødselsnummer)
 
         logger.info("Genererer Oppsummerings-PDF av ettersending.")
-        val soknadOppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdfEttersending(melding)
-        logger.info("Generering av Oppsummerings-PDF OK.")
+        val oppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdfEttersending(ettersending)
 
         logger.info("Mellomlagrer Oppsummerings-PDF.")
-        val soknadOppsummeringPdfUrl = dokumentService.lagreSoknadsOppsummeringPdf(
-            pdf = soknadOppsummeringPdf,
+        val oppsummeringPdfUrl = k9MellomlagringService.lagreDokument(
+            dokument = Dokument(
+                eier = dokumentEier,
+                content = oppsummeringPdf,
+                contentType = "application/pdf",
+                title = ettersending.søknadstype.somDokumentbeskrivelse()
+            ),
             correlationId = correlationId,
-            aktørId = søkerAktørId,
-            dokumentbeskrivelse = søknadstype.somDokumentbeskrivelse()
         )
-        logger.info("Mellomlagring av Oppsummerings-PDF OK")
 
         logger.info("Mellomlagrer Oppsummerings-JSON")
-        val soknadJsonUrl = dokumentService.lagreSoknadsMeldingEttersending(
-            ettersending = melding.k9Format,
-            aktørId = søkerAktørId,
-            correlationId = correlationId,
-            søknadstype = melding.søknadstype.pdfNavn
+        val ettersendingJsonUrl = k9MellomlagringService.lagreDokument(
+            dokument = Dokument(
+                eier = dokumentEier,
+                content = Søknadsformat.somJsonEttersending(ettersending.k9Format),
+                contentType = "application/json",
+                title = "Ettersendelse ${ettersending.søknadstype} som JSON"
+            ),
+            correlationId = correlationId
         )
 
-
-        logger.info("Mellomlagrer Oppsummerings-JSON OK.")
         val komplettDokumentUrls = mutableListOf(
             listOf(
-                soknadOppsummeringPdfUrl,
-                soknadJsonUrl
+                oppsummeringPdfUrl,
+                ettersendingJsonUrl
             )
         )
 
-        if (melding.vedleggUrls.isNotEmpty()) {
-            logger.trace("Legger til ${melding.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
-            melding.vedleggUrls.forEach { komplettDokumentUrls.add(listOf(it)) }
+        if (ettersending.vedleggUrls.isNotEmpty()) {
+            logger.trace("Legger til ${ettersending.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
+            ettersending.vedleggUrls.forEach { komplettDokumentUrls.add(listOf(it)) }
         }
 
-        logger.info("Totalt ${komplettDokumentUrls.size} dokumentbolker.")
-
+        logger.info("Totalt ${komplettDokumentUrls.size} dokumentbolker med totalt ${komplettDokumentUrls.flatten().size} dokumenter.")
 
         val preprossesertMeldingV1 = PreprosessertEttersendingV1(
-            melding = melding,
-            dokumentUrls = komplettDokumentUrls.toList(),
-            sokerAktoerId = søkerAktørId
+            melding = ettersending,
+            dokumentUrls = komplettDokumentUrls
         )
         preprossesertMeldingV1.reportMetrics()
         return preprossesertMeldingV1
@@ -80,7 +78,7 @@ internal class PreprosseseringV1Service(
 }
 
 private fun Søknadstype.somDokumentbeskrivelse(): String {
-    return when(this) {
+    return when (this) {
         Søknadstype.PLEIEPENGER_SYKT_BARN -> "Ettersendelse pleiepenger sykt barn"
         Søknadstype.OMP_UTV_KS -> "Ettersendelse ekstra omsorgsdager"
         Søknadstype.OMP_UT_SNF -> "Ettersendelse omsorgspenger utbetaling selvstendig/frilanser"

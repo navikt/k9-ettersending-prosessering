@@ -6,7 +6,7 @@ import no.nav.helse.prosessering.v1.asynkron.Data
 import no.nav.helse.prosessering.v1.asynkron.TopicEntry
 import no.nav.helse.prosessering.v1.asynkron.Topics.CLEANUP_ETTERSENDING
 import no.nav.helse.prosessering.v1.asynkron.Topics.K9_DITTNAV_VARSEL
-import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT_ETTERSENDING
+import no.nav.helse.prosessering.v1.asynkron.Topics.MOTTATT_ETTERSENDING_V2
 import no.nav.helse.prosessering.v1.asynkron.Topics.PREPROSESSERT_ETTERSENDING
 import no.nav.helse.prosessering.v1.asynkron.k9EttersendingKonfigurertMapper
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
@@ -34,7 +34,7 @@ object KafkaWrapper {
             withSchemaRegistry = false,
             withSecurity = true,
             topicNames = listOf(
-                MOTTATT_ETTERSENDING.name,
+                MOTTATT_ETTERSENDING_V2.name,
                 PREPROSESSERT_ETTERSENDING.name,
                 CLEANUP_ETTERSENDING.name,
                 K9_DITTNAV_VARSEL.name
@@ -92,8 +92,8 @@ fun KafkaEnvironment.k9DittnavVarselKonsumer(): KafkaConsumer<String, String> {
 
 fun KafkaEnvironment.meldingEttersendingProducer() = KafkaProducer(
     testProducerProperties("K9EttersendingProsesseringTestProducer"),
-    MOTTATT_ETTERSENDING.keySerializer,
-    MOTTATT_ETTERSENDING.serDes
+    MOTTATT_ETTERSENDING_V2.keySerializer,
+    MOTTATT_ETTERSENDING_V2.serDes
 )
 
 fun KafkaConsumer<String, String>.hentCleanupMeldingEttersending(
@@ -137,7 +137,7 @@ fun KafkaConsumer<String, String>.hentK9Beskjed(
 fun KafkaProducer<String, TopicEntry>.leggTilMottak(soknad: EttersendingV1) {
     send(
         ProducerRecord(
-            MOTTATT_ETTERSENDING.name,
+            MOTTATT_ETTERSENDING_V2.name,
             soknad.søknadId,
             TopicEntry(
                 metadata = Metadata(

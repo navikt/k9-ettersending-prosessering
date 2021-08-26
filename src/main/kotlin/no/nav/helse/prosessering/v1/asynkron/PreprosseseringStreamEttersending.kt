@@ -10,6 +10,7 @@ import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
 import java.time.ZonedDateTime
+import java.util.*
 
 internal class PreprosseseringStreamEttersending(
     preprosseseringV1Service: PreprosseseringV1Service,
@@ -36,7 +37,7 @@ internal class PreprosseseringStreamEttersending(
 
         private fun topology(preprosseseringV1Service: PreprosseseringV1Service, gittDato: ZonedDateTime): Topology {
             val builder = StreamsBuilder()
-            val fromMottatt = Topics.MOTTATT_ETTERSENDING
+            val fromMottatt = Topics.MOTTATT_ETTERSENDING_V2
             val tilPreprossesert = Topics.PREPROSESSERT_ETTERSENDING
 
             builder
@@ -46,18 +47,17 @@ internal class PreprosseseringStreamEttersending(
                 .mapValues { soknadId, entry ->
                     process(NAME, soknadId, entry) {
                         logger.info("Preprosesserer ettersending.")
-                        val ettersending = entry.deserialiserTilEttersending()
-                        val preprossesertMelding = preprosseseringV1Service.preprosseserEttersending(
-                            melding = ettersending,
-                            metadata = entry.metadata,
-                            søknadstype = ettersending.søknadstype
+                        val preprossesertMelding = preprosseseringV1Service.preprosesserEttersending(
+                            ettersending = entry.deserialiserTilEttersending(),
+                            metadata = entry.metadata
                         )
                         logger.info("Preprossesering av ettersending ferdig.")
                         preprossesertMelding.serialiserTilData()
                     }
                 }
                 .to(tilPreprossesert.name, tilPreprossesert.produced)
-            return builder.build()
+            return builder.build(Properties()
+            )
         }
     }
 

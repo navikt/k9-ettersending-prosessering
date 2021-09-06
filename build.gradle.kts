@@ -16,7 +16,7 @@ val fuelVersion = "2.3.1"
 val mainClass = "no.nav.helse.K9EttersendingProsesseringKt"
 
 plugins {
-    kotlin("jvm") version "1.5.21"
+    kotlin("jvm") version "1.5.30"
     id("com.github.johnrengelman.shadow") version "7.0.0"
 }
 
@@ -110,7 +110,7 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "7.1.1"
+    gradleVersion = "7.2"
 }
 
 tasks.withType<Test> {

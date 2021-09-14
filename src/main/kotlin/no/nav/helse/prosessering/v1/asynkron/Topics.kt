@@ -23,11 +23,6 @@ data class CleanupEttersending(val metadata: Metadata, val melding: Preprosesser
 data class JournalfortEttersending(val journalpostId: String, val søknad: Ettersendelse)
 
 internal object Topics {
-    val MOTTATT_ETTERSENDING = Topic(
-        name = "dusseldorf.privat-k9-ettersending-mottatt",
-        serDes = SerDes()
-    )
-
     val MOTTATT_ETTERSENDING_V2 = Topic(
         name = "dusseldorf.privat-k9-ettersending-mottatt-v2",
         serDes = SerDes()

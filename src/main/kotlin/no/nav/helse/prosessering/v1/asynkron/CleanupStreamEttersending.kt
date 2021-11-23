@@ -8,7 +8,6 @@ import no.nav.helse.kafka.KafkaConfig
 import no.nav.helse.kafka.ManagedKafkaStreams
 import no.nav.helse.kafka.ManagedStreamHealthy
 import no.nav.helse.kafka.ManagedStreamReady
-import no.nav.helse.prosessering.v1.felles.tilK9Beskjed
 import org.apache.kafka.streams.StreamsBuilder
 import org.apache.kafka.streams.Topology
 import org.slf4j.LoggerFactory
@@ -39,7 +38,6 @@ internal class CleanupStreamEttersending(
         private fun topology(k9MellomlagringService: K9MellomlagringService, gittDato: ZonedDateTime): Topology {
             val builder = StreamsBuilder()
             val fraCleanup = Topics.CLEANUP_ETTERSENDING
-            val tilK9DittnavVarsel = Topics.K9_DITTNAV_VARSEL
 
             builder
                 .stream(fraCleanup.name, fraCleanup.consumed)
@@ -55,13 +53,9 @@ internal class CleanupStreamEttersending(
                             dokumentEier = DokumentEier(cleanupEttersending.melding.søker.fødselsnummer)
                         )
                         logger.info("Dokumenter slettet.")
-
-                        val k9beskjed = cleanupEttersending.tilK9Beskjed()
-                        logger.info("Sender K9Beskjed viderer til ${tilK9DittnavVarsel.name}")
-                        k9beskjed.serialiserTilData()
+                        cleanupEttersending.serialiserTilData()
                     }
                 }
-                .to(tilK9DittnavVarsel.name, tilK9DittnavVarsel.produced)
             return builder.build()
         }
     }

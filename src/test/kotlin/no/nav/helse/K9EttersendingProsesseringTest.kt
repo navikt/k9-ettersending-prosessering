@@ -41,7 +41,6 @@ class K9EttersendingProsesseringTest {
         private val kafkaEnvironment = KafkaWrapper.bootstrap()
         private val kafkaTestProducerEttersending = kafkaEnvironment.meldingEttersendingProducer()
         private val cleanupKonsumerEttersending = kafkaEnvironment.cleanupKonsumerEttersending()
-        private val k9DittnavVarselKonsumer = kafkaEnvironment.k9DittnavVarselKonsumer()
 
         private var engine = newEngine(kafkaEnvironment).apply {
             start(wait = true)
@@ -112,9 +111,6 @@ class K9EttersendingProsesseringTest {
         cleanupKonsumerEttersending
             .hentCleanupMeldingEttersending(søknad.søknadId)
             .assertCleanupEttersendeFormat(søknadstype)
-
-        k9DittnavVarselKonsumer.hentK9Beskjed(søknad.søknadId)
-            .assertGyldigK9Beskjed(søknad)
     }
 
     @Test
@@ -128,9 +124,6 @@ class K9EttersendingProsesseringTest {
         cleanupKonsumerEttersending
             .hentCleanupMeldingEttersending(søknad.søknadId)
             .assertCleanupEttersendeFormat(søknadstype)
-
-        k9DittnavVarselKonsumer.hentK9Beskjed(søknad.søknadId)
-            .assertGyldigK9Beskjed(søknad)
     }
 
     @Test
@@ -151,9 +144,6 @@ class K9EttersendingProsesseringTest {
         cleanupKonsumerEttersending
             .hentCleanupMeldingEttersending(søknad.søknadId)
             .assertCleanupEttersendeFormat(søknadstype)
-
-        k9DittnavVarselKonsumer.hentK9Beskjed(søknad.søknadId)
-            .assertGyldigK9Beskjed(søknad)
     }
 
     private fun readyGir200HealthGir503() {

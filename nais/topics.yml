@@ -95,3 +95,6 @@ spec:
     - team: dusseldorf
       application: k9-ettersending-prosessering
       access: readwrite
+    - team: dusseldorf
+      application: sif-innsyn-api
+      access: read

@@ -19,7 +19,12 @@ import org.apache.kafka.streams.kstream.Produced
 import org.json.JSONObject
 
 data class Data(val rawJson: String)
-data class CleanupEttersending(val metadata: Metadata, val melding: PreprosessertEttersendingV1, val journalførtMelding: JournalfortEttersending)
+data class CleanupEttersending(
+    val metadata: Metadata,
+    val melding: PreprosessertEttersendingV1,
+    val journalførtMelding: JournalfortEttersending
+)
+
 data class JournalfortEttersending(val journalpostId: String, val søknad: Ettersendelse)
 
 internal object Topics {
@@ -37,27 +42,25 @@ internal object Topics {
         name = "dusseldorf.privat-k9-ettersending-cleanup",
         serDes = SerDes()
     )
-
-    val K9_DITTNAV_VARSEL = Topic(
-        name = "dusseldorf.privat-k9-dittnav-varsel-beskjed",
-        serDes = SerDes()
-    )
 }
 
-internal fun TopicEntry.deserialiserTilCleanup(): CleanupEttersending  = k9EttersendingKonfigurertMapper().readValue(data.rawJson)
-internal fun TopicEntry.deserialiserTilEttersending(): EttersendingV1 = k9EttersendingKonfigurertMapper().readValue(data.rawJson)
-internal fun TopicEntry.deserialiserTilPreprosessertMelding(): PreprosessertEttersendingV1  = k9EttersendingKonfigurertMapper().readValue(data.rawJson)
+internal fun TopicEntry.deserialiserTilCleanup(): CleanupEttersending =
+    k9EttersendingKonfigurertMapper().readValue(data.rawJson)
+
+internal fun TopicEntry.deserialiserTilEttersending(): EttersendingV1 =
+    k9EttersendingKonfigurertMapper().readValue(data.rawJson)
+
+internal fun TopicEntry.deserialiserTilPreprosessertMelding(): PreprosessertEttersendingV1 =
+    k9EttersendingKonfigurertMapper().readValue(data.rawJson)
+
 internal fun Any.serialiserTilData() = Data(k9EttersendingKonfigurertMapper().writeValueAsString(this))
 
 class SerDes : Serializer<TopicEntry>, Deserializer<TopicEntry> {
     override fun configure(configs: MutableMap<String, *>?, isKey: Boolean) {}
     override fun close() {}
     override fun deserialize(topic: String, entry: ByteArray): TopicEntry = TopicEntry(String(entry))
-    override fun serialize(topic: String, entry: TopicEntry): ByteArray{
-        return when(topic){
-            Topics.K9_DITTNAV_VARSEL.name -> entry.data.rawJson.toByteArray()
-            else -> entry.rawJson.toByteArray()
-        }
+    override fun serialize(topic: String, entry: TopicEntry): ByteArray {
+        return entry.rawJson.toByteArray()
     }
 }
 

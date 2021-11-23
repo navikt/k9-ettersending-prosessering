@@ -26,20 +26,6 @@ enum class Ytelse(val tekst: String) {
     ETTERSENDING_OMP_DELE_DAGER("Vi har mottatt din ettersendelse til omsorgspenger.") // Ettersending - Melding om deling av omsorgsdager
 }
 
-fun CleanupEttersending.tilK9Beskjed(): K9Beskjed {
-    val ytelse = this.melding.søknadstype.somK9BeskjedYtelse()
-    return K9Beskjed(
-        metadata = this.metadata,
-        grupperingsId = this.melding.soknadId,
-        tekst = ytelse.tekst,
-        søkerFødselsnummer = this.melding.søker.fødselsnummer,
-        dagerSynlig = DAGER_SYNLIG_K9BESKJED,
-        link = null,
-        eventId = UUID.randomUUID().toString(),
-        ytelse = ytelse
-    )
-}
-
 fun Søknadstype.somK9BeskjedYtelse(): Ytelse =
     when (this) {
         Søknadstype.PLEIEPENGER_SYKT_BARN -> Ytelse.ETTERSENDING_PLEIEPENGER_SYKT_BARN

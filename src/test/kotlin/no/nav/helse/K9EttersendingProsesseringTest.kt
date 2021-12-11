@@ -29,7 +29,6 @@ class K9EttersendingProsesseringTest {
         private val logger: Logger = LoggerFactory.getLogger(K9EttersendingProsesseringTest::class.java)
 
         private val wireMockServer: WireMockServer = WireMockBuilder()
-            .withNaisStsSupport()
             .withAzureSupport()
             .build()
             .stubK9MellomlagringHealth()

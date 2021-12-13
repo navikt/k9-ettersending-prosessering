@@ -42,9 +42,6 @@ spec:
   prometheus:
     enabled: true
     path: /metrics
-  envFrom:
-    - secret: {{app}}
-  webproxy: true
   env:
   {{#each env}}
     - name: {{@key}}

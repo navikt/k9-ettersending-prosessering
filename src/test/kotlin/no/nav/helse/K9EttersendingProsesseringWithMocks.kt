@@ -17,7 +17,6 @@ class K9EttersendingProsesseringWithMocks {
 
             val wireMockServer: WireMockServer = WireMockBuilder()
                 .withPort(8091)
-                .withNaisStsSupport()
                 .withAzureSupport()
                 .build()
                 .stubK9MellomlagringHealth()

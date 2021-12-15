@@ -58,7 +58,10 @@ dependencies {
 
     // Test
     testImplementation ( "org.apache.kafka:kafka-clients:$kafkaVersion")
-    testImplementation ( "no.nav:kafka-embedded-env:$kafkaEmbeddedEnvVersion")
+    testImplementation ( "no.nav:kafka-embedded-env:$kafkaEmbeddedEnvVersion") {
+        exclude("com.google.code.gson", "gson")
+    }
+    testImplementation("com.google.code.gson:gson:2.8.9")
     testImplementation ( "no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")

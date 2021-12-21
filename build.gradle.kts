@@ -2,7 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val dusseldorfKtorVersion = "3.1.6.7-7d29e37"
-val k9FormatVersion = "5.5.8"
+val k9FormatVersion = "5.7.2"
 val ktorVersion = ext.get("ktorVersion").toString()
 val slf4jVersion = ext.get("slf4jVersion").toString()
 val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
@@ -63,7 +63,6 @@ dependencies {
         exclude("org.glassfish", "jakarta.el")
     }
     testImplementation("com.google.code.gson:gson:2.8.9")
-    testImplementation("org.glassfish:jakarta.el:3.0.4")
     testImplementation ( "no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")

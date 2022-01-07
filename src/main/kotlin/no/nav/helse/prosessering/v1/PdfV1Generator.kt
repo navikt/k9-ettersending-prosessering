@@ -14,7 +14,6 @@ import no.nav.helse.prosessering.v1.felles.Søker
 import no.nav.helse.prosessering.v1.felles.norskDag
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
-import java.net.URI
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
@@ -78,9 +77,6 @@ internal class PdfV1Generator {
                             "fødselsnummer" to melding.søker.fødselsnummer
                         ),
                         "beskrivelse" to melding.beskrivelse,
-                        "vedleggUrls" to mapOf(
-                            "vedlegg" to melding.vedleggUrls?.somMapVedleggUrls()
-                        ),
                         "søknadstype" to melding.søknadstype.pdfNavn,
                         "samtykke" to mapOf(
                             "harForståttRettigheterOgPlikter" to melding.harForståttRettigheterOgPlikter,
@@ -138,14 +134,6 @@ internal class PdfV1Generator {
                 BaseRendererBuilder.FontStyle.ITALIC,
                 false
             )
-}
-
-private fun List<URI>.somMapVedleggUrls(): List<Map<String, Any?>> {
-    return map {
-        mapOf(
-            "navn" to it
-        )
-    }
 }
 
 private fun List<String>.somMapTitler(): List<Map<String, Any?>> {

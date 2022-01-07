@@ -16,7 +16,6 @@ data class Configuration(private val config: ApplicationConfig) {
     fun getk9JoarkBaseUrl() = URI(config.getRequiredString("nav.K9_JOARK_BASE_URL", secret = false))
     fun getK9MellomlagringBaseUrl() = URI(config.getRequiredString("nav.k9_mellomlagring_base_url", secret = false))
 
-
     private fun unreadyAfterStreamStoppedIn() = Duration.of(
         config.getRequiredString("nav.kafka.unready_after_stream_stopped_in.amount", secret = false).toLong(),
         ChronoUnit.valueOf(config.getRequiredString("nav.kafka.unready_after_stream_stopped_in.unit", secret = false))

@@ -99,7 +99,7 @@ class JoarkGateway(
                 mellomnavn = preprosessertEttersending.søker.mellomnavn,
                 etternavn = preprosessertEttersending.søker.etternavn
             ),
-            dokumenter = preprosessertEttersending.dokumentUrls
+            dokumentId = preprosessertEttersending.vedleggId
         )
 
         val body = objectMapper.writeValueAsBytes(joarkRequest)
@@ -160,7 +160,7 @@ private data class JoarkRequest(
     @JsonProperty("norsk_ident") val norskIdent: String,
     val mottatt: ZonedDateTime,
     @JsonProperty("soker_navn") val søkerNavn: Navn,
-    val dokumenter: List<List<URI>>
+    @JsonProperty("dokument_id") val dokumentId: List<List<String>>
 )
 
 data class Navn(

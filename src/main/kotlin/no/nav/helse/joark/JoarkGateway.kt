@@ -164,7 +164,7 @@ private data class JoarkRequest(
     @JsonProperty("norsk_ident") val norskIdent: String,
     val mottatt: ZonedDateTime,
     @JsonProperty("soker_navn") val søkerNavn: Navn,
-    val dokumentId: List<List<String>>
+    @JsonProperty("dokument_id") val dokumentId: List<List<String>>
 )
 
 data class Navn(

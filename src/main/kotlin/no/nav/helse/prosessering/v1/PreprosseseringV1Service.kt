@@ -42,7 +42,7 @@ internal class PreprosseseringV1Service(
                 title = ettersending.søknadstype.somDokumentbeskrivelse()
             ),
             correlationId = correlationId,
-        ).vedleggIdFraUrl()
+        ).vedleggId()
 
         logger.info("Mellomlagrer Oppsummerings-JSON")
         val ettersendingJsonVedleggId = k9MellomlagringService.lagreDokument(
@@ -53,7 +53,7 @@ internal class PreprosseseringV1Service(
                 title = "Ettersendelse ${ettersending.søknadstype} som JSON"
             ),
             correlationId = correlationId
-        ).vedleggIdFraUrl()
+        ).vedleggId()
 
         val komplettVedleggId = mutableListOf(
             listOf(
@@ -69,7 +69,7 @@ internal class PreprosseseringV1Service(
             if(ettersending.vedleggUrls != null && ettersending.vedleggUrls.isNotEmpty()){
                 logger.info("Legger til ${ettersending.vedleggUrls.size} vedlegg id's fra meldingen som dokument.")
                 logger.info("Mapper om vedleggUrls fra melding til vedleggId")
-                ettersending.vedleggUrls.forEach { komplettVedleggId.add(listOf(it.vedleggIdFraUrl())) }
+                ettersending.vedleggUrls.forEach { komplettVedleggId.add(listOf(it.vedleggId())) }
             }
         }
 
@@ -84,7 +84,7 @@ internal class PreprosseseringV1Service(
     }
 }
 
-fun URI.vedleggIdFraUrl(): String = this.toString().substringAfterLast("/")
+fun URI.vedleggId(): String = this.toString().substringAfterLast("/")
 
 private fun Søknadstype.somDokumentbeskrivelse(): String {
     return when (this) {

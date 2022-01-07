@@ -48,7 +48,7 @@ internal class CleanupStreamEttersending(
                         logger.info("Sletter ettersending dokumenter.")
                         val cleanupEttersending = entry.deserialiserTilCleanup()
                         k9MellomlagringService.slettDokumeter(
-                            urlBolks = cleanupEttersending.melding.dokumentUrls,
+                            vedleggIdBolks = cleanupEttersending.melding.vedleggId,
                             correlationId = CorrelationId(entry.metadata.correlationId),
                             dokumentEier = DokumentEier(cleanupEttersending.melding.søker.fødselsnummer)
                         )

@@ -2,13 +2,12 @@ package no.nav.helse.prosessering.v1.ettersending
 
 import no.nav.helse.prosessering.v1.felles.Søker
 import no.nav.k9.ettersendelse.Ettersendelse
-import java.net.URI
 import java.time.ZonedDateTime
 
 data class PreprosessertEttersendingV1(
     val sprak: String?,
     val soknadId: String,
-    val dokumentUrls: List<List<URI>>,
+    val vedleggId: List<List<String>>,
     val mottatt: ZonedDateTime,
     val søker: Søker,
     val harForstattRettigheterOgPlikter: Boolean,
@@ -20,11 +19,11 @@ data class PreprosessertEttersendingV1(
 ) {
     internal constructor(
         melding: EttersendingV1,
-        dokumentUrls: List<List<URI>>
+        vedleggId: List<List<String>>
     ) : this(
         sprak = melding.språk,
         soknadId = melding.søknadId,
-        dokumentUrls = dokumentUrls,
+        vedleggId = vedleggId,
         mottatt = melding.mottatt,
         søker = melding.søker,
         beskrivelse = melding.beskrivelse,

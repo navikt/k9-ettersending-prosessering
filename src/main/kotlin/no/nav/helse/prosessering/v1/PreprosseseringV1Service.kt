@@ -12,6 +12,7 @@ import no.nav.helse.prosessering.v1.ettersending.reportMetrics
 import no.nav.helse.prosessering.v1.felles.Metadata
 import no.nav.helse.prosessering.v1.felles.SoknadId
 import org.slf4j.LoggerFactory
+import java.net.URI
 
 internal class PreprosseseringV1Service(
     private val pdfV1Generator: PdfV1Generator,
@@ -33,7 +34,7 @@ internal class PreprosseseringV1Service(
         val oppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdfEttersending(ettersending)
 
         logger.info("Mellomlagrer Oppsummerings-PDF.")
-        val oppsummeringPdfUrl = k9MellomlagringService.lagreDokument(
+        val oppsummeringPdfVedleggId = k9MellomlagringService.lagreDokument(
             dokument = Dokument(
                 eier = dokumentEier,
                 content = oppsummeringPdf,
@@ -41,10 +42,10 @@ internal class PreprosseseringV1Service(
                 title = ettersending.søknadstype.somDokumentbeskrivelse()
             ),
             correlationId = correlationId,
-        )
+        ).vedleggIdFraUrl()
 
         logger.info("Mellomlagrer Oppsummerings-JSON")
-        val ettersendingJsonUrl = k9MellomlagringService.lagreDokument(
+        val ettersendingJsonVedleggId = k9MellomlagringService.lagreDokument(
             dokument = Dokument(
                 eier = dokumentEier,
                 content = Søknadsformat.somJsonEttersending(ettersending.k9Format),
@@ -52,30 +53,38 @@ internal class PreprosseseringV1Service(
                 title = "Ettersendelse ${ettersending.søknadstype} som JSON"
             ),
             correlationId = correlationId
-        )
+        ).vedleggIdFraUrl()
 
-        val komplettDokumentUrls = mutableListOf(
+        val komplettVedleggId = mutableListOf(
             listOf(
-                oppsummeringPdfUrl,
-                ettersendingJsonUrl
+                oppsummeringPdfVedleggId,
+                ettersendingJsonVedleggId
             )
         )
 
-        if (ettersending.vedleggUrls.isNotEmpty()) {
-            logger.trace("Legger til ${ettersending.vedleggUrls.size} vedlegg URL's fra meldingen som dokument.")
-            ettersending.vedleggUrls.forEach { komplettDokumentUrls.add(listOf(it)) }
+        if(ettersending.vedleggId != null){
+            logger.info("Legger til ${ettersending.vedleggId.size} vedlegg id's fra meldingen som dokument.")
+            ettersending.vedleggId.forEach { komplettVedleggId.add(listOf(it)) }
+        } else {
+            if(ettersending.vedleggUrls != null && ettersending.vedleggUrls.isNotEmpty()){
+                logger.info("Legger til ${ettersending.vedleggUrls.size} vedlegg id's fra meldingen som dokument.")
+                logger.info("Mapper om vedleggUrls fra melding til vedleggId")
+                ettersending.vedleggUrls.forEach { komplettVedleggId.add(listOf(it.vedleggIdFraUrl())) }
+            }
         }
 
-        logger.info("Totalt ${komplettDokumentUrls.size} dokumentbolker med totalt ${komplettDokumentUrls.flatten().size} dokumenter.")
+        logger.info("Totalt ${komplettVedleggId.size} dokumentbolker med totalt ${komplettVedleggId.flatten().size} dokumenter.")
 
         val preprossesertMeldingV1 = PreprosessertEttersendingV1(
             melding = ettersending,
-            dokumentUrls = komplettDokumentUrls
+            vedleggId = komplettVedleggId
         )
         preprossesertMeldingV1.reportMetrics()
         return preprossesertMeldingV1
     }
 }
+
+fun URI.vedleggIdFraUrl(): String = this.toString().substringAfterLast("/")
 
 private fun Søknadstype.somDokumentbeskrivelse(): String {
     return when (this) {

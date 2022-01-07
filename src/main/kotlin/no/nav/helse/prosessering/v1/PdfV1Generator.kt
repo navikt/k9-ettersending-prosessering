@@ -79,7 +79,7 @@ internal class PdfV1Generator {
                         ),
                         "beskrivelse" to melding.beskrivelse,
                         "vedleggUrls" to mapOf(
-                            "vedlegg" to melding.vedleggUrls.somMapVedleggUrls()
+                            "vedlegg" to melding.vedleggUrls?.somMapVedleggUrls()
                         ),
                         "søknadstype" to melding.søknadstype.pdfNavn,
                         "samtykke" to mapOf(

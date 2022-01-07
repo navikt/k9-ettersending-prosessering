@@ -10,7 +10,8 @@ data class EttersendingV1(
     val søknadId: String,
     val mottatt: ZonedDateTime,
     val språk: String? = "nb",
-    val vedleggUrls: List<URI>,
+    val vedleggUrls: List<URI>?, // TODO: 07/01/2022 Fjernes når api kun sender vedleggId
+    val vedleggId: List<String>?,
     val harForståttRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
     val beskrivelse: String?,

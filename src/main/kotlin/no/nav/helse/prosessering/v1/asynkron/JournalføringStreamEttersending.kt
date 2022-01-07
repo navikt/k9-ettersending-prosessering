@@ -49,13 +49,13 @@ internal class JournalføringStreamEttersending(
                     process(NAME, soknadId, entry) {
                         val preprosessertEttersending = entry.deserialiserTilPreprosessertMelding()
 
-                        logger.info("Journalfører dokumenter: {}", preprosessertEttersending.dokumentUrls)
+                        logger.info("Journalfører dokumenter: {}", preprosessertEttersending.vedleggId)
                         val journaPostId = joarkGateway.journalførEttersending(
                             correlationId = CorrelationId(entry.metadata.correlationId),
                             preprosessertEttersending = preprosessertEttersending
                         )
-                        logger.info("Dokumenter journalført med ID = ${journaPostId.journalpostId}.")
 
+                        logger.info("Dokumenter journalført med ID = ${journaPostId.journalpostId}.")
                         val journalfort = JournalfortEttersending(
                             journalpostId = journaPostId.journalpostId,
                             søknad = preprosessertEttersending.k9Format

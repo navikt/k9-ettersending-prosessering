@@ -91,6 +91,10 @@ class JoarkGateway(
 
         val authorizationHeader = cachedAccessTokenClient.getAccessToken(journalforeScopes).asAuthoriationHeader()
 
+        val dokumentId = preprosessertEttersending.dokumentUrls.map {
+            it.map { it.toString().substringAfterLast("/") }
+        }
+
         val joarkRequest = JoarkRequest(
             norskIdent = preprosessertEttersending.søker.fødselsnummer,
             mottatt = preprosessertEttersending.mottatt,
@@ -99,7 +103,7 @@ class JoarkGateway(
                 mellomnavn = preprosessertEttersending.søker.mellomnavn,
                 etternavn = preprosessertEttersending.søker.etternavn
             ),
-            dokumenter = preprosessertEttersending.dokumentUrls
+            dokumentId = dokumentId
         )
 
         val body = objectMapper.writeValueAsBytes(joarkRequest)
@@ -160,7 +164,7 @@ private data class JoarkRequest(
     @JsonProperty("norsk_ident") val norskIdent: String,
     val mottatt: ZonedDateTime,
     @JsonProperty("soker_navn") val søkerNavn: Navn,
-    val dokumenter: List<List<URI>>
+    val dokumentId: List<List<String>>
 )
 
 data class Navn(

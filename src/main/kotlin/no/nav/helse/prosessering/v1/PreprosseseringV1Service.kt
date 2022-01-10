@@ -62,16 +62,8 @@ internal class PreprosseseringV1Service(
             )
         )
 
-        if(ettersending.vedleggId != null){
-            logger.info("Legger til ${ettersending.vedleggId.size} vedlegg id's fra meldingen som dokument.")
-            ettersending.vedleggId.forEach { komplettVedleggId.add(listOf(it)) }
-        } else {
-            if(ettersending.vedleggUrls != null && ettersending.vedleggUrls.isNotEmpty()){
-                logger.info("Legger til ${ettersending.vedleggUrls.size} vedlegg id's fra meldingen som dokument.")
-                logger.info("Mapper om vedleggUrls fra melding til vedleggId")
-                ettersending.vedleggUrls.forEach { komplettVedleggId.add(listOf(it.vedleggId())) }
-            }
-        }
+        logger.info("Legger til ${ettersending.vedleggId.size} vedlegg id's fra meldingen som dokument.")
+        ettersending.vedleggId.forEach { komplettVedleggId.add(listOf(it)) }
 
         logger.info("Totalt ${komplettVedleggId.size} dokumentbolker med totalt ${komplettVedleggId.flatten().size} dokumenter.")
 

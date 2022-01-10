@@ -2,7 +2,6 @@ package no.nav.helse.prosessering.v1.ettersending
 
 import no.nav.helse.prosessering.v1.felles.Søker
 import no.nav.k9.ettersendelse.Ettersendelse
-import java.net.URI
 import java.time.ZonedDateTime
 
 data class EttersendingV1(
@@ -10,8 +9,7 @@ data class EttersendingV1(
     val søknadId: String,
     val mottatt: ZonedDateTime,
     val språk: String? = "nb",
-    val vedleggUrls: List<URI>?, // TODO: 07/01/2022 Fjernes når api kun sender vedleggId
-    val vedleggId: List<String>?,
+    val vedleggId: List<String>,
     val harForståttRettigheterOgPlikter: Boolean,
     val harBekreftetOpplysninger: Boolean,
     val beskrivelse: String?,

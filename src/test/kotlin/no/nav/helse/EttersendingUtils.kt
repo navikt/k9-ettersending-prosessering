@@ -35,7 +35,6 @@ internal object EttersendingUtils {
                 "Etiam nec tellus sapien. Nam gravida massa id sagittis ultrices.",
         søknadstype = Søknadstype.OMP_UTV_KS,
         vedleggId = listOf("vedlegg1", "vedlegg2", "vedlegg3"),
-        vedleggUrls = null,
         titler = listOf("Vedlegg 1", "Vedlegg 2", "Vedlegg 3"),
         k9Format = Ettersendelse.builder()
             .søknadId(SøknadId(søknadId))

@@ -62,7 +62,7 @@ dependencies {
         exclude("com.google.code.gson", "gson")
         exclude("org.glassfish", "jakarta.el")
     }
-    testImplementation("com.google.code.gson:gson:2.8.9")
+    testImplementation("com.google.code.gson:gson:2.9.0")
     testImplementation ( "no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")

@@ -67,6 +67,15 @@ class PdfV1GeneratorTest {
         )
         if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
 
+        id = "7-full-ettersending-pp-livets-sluttfase"
+        pdf = generator.generateSoknadOppsummeringPdfEttersending(
+            melding = EttersendingUtils.defaultEttersending().copy(
+                søknadstype = Søknadstype.PLEIEPENGER_LIVETS_SLUTTFASE,
+                beskrivelse = null
+            )
+        )
+        if (writeBytes) File(pdfPath(soknadId = id)).writeBytes(pdf)
+
     }
 
     private fun pdfPath(soknadId: String) = "${System.getProperty("user.dir")}/generated-pdf-$soknadId.pdf"

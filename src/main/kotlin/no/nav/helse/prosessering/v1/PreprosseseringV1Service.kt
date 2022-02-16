@@ -86,5 +86,6 @@ private fun Søknadstype.somDokumentbeskrivelse(): String {
         Søknadstype.OMP_UT_ARBEIDSTAKER -> "Ettersendelse omsorgspenger utbetaling arbeidstaker"
         Søknadstype.OMP_UTV_MA -> "Ettersendelse omsorgspenger regnet som alene"
         Søknadstype.OMP_DELE_DAGER -> "Ettersendelse melding om deling av omsorgsdager"
+        Søknadstype.PLEIEPENGER_LIVETS_SLUTTFASE -> "Ettersendelse pleiepenger i livets sluttfase"
     }
 }

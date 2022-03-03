@@ -65,6 +65,11 @@ class JoarkGateway(
         pathParts = listOf("v1", "pleiepenge", "ettersending", "journalforing")
     ).toString()
 
+    private val journalførPleiepengerLivetsSluttfaseUrl = Url.buildURL(
+        baseUrl = baseUrl,
+        pathParts = listOf("v1", "pleiepenge", "livets-sluttfase","ettersending", "journalforing")
+    ).toString()
+
     private val journalførOmsorgspengerDeleDagerUrl = Url.buildURL(
         baseUrl = baseUrl,
         pathParts = listOf("v1", "omsorgsdagerdeling", "ettersending", "journalforing")
@@ -108,6 +113,7 @@ class JoarkGateway(
         val httpRequest = when (preprosessertEttersending.søknadstype) {
             OMP_UTV_KS -> journalførOmsorgspengerUrl
             PLEIEPENGER_SYKT_BARN ->  journalførPleiepengerUrl
+            PLEIEPENGER_LIVETS_SLUTTFASE ->  journalførPleiepengerLivetsSluttfaseUrl
             OMP_UT_ARBEIDSTAKER -> journalførOmsorgspengeUtbetalingArbeidstakerUrl
             OMP_UT_SNF -> journalførOmsorgspengeUtbetalingSNFUrl
             OMP_UTV_MA -> journalførOmsorgspengerMidlertidigAleneUrl

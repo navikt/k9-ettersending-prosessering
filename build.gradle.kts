@@ -17,7 +17,7 @@ val mainClass = "no.nav.helse.K9EttersendingProsesseringKt"
 
 plugins {
     kotlin("jvm") version "1.6.10"
-    id("com.github.johnrengelman.shadow") version "7.1.1"
+    id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 buildscript {
@@ -62,7 +62,7 @@ dependencies {
         exclude("com.google.code.gson", "gson")
         exclude("org.glassfish", "jakarta.el")
     }
-    testImplementation("com.google.code.gson:gson:2.8.9")
+    testImplementation("com.google.code.gson:gson:2.9.0")
     testImplementation ( "no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")

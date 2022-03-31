@@ -19,6 +19,9 @@ spec:
       application: k9-ettersending-api
       access: write
     - team: dusseldorf
+      application: k9-brukerdialog-api
+      access: write
+    - team: dusseldorf
       application: k9-ettersending-prosessering
       access: read
 

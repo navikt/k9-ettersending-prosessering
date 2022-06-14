@@ -1,7 +1,7 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "3.1.6.7-05da1a0"
+val dusseldorfKtorVersion = "3.2.0.2-a615e0c"
 val k9FormatVersion = "6.0.0"
 val ktorVersion = ext.get("ktorVersion").toString()
 val slf4jVersion = ext.get("slf4jVersion").toString()
@@ -16,13 +16,13 @@ val fuelVersion = "2.3.1"
 val mainClass = "no.nav.helse.K9EttersendingProsesseringKt"
 
 plugins {
-    kotlin("jvm") version "1.6.21"
+    kotlin("jvm") version "1.7.0"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
 buildscript {
     // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/05da1a09b4cad3aef489f934078ac8afafe155ae/gradle/dusseldorf-ktor.gradle.kts")
+    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/a615e0cd38696e407239902c9017a5a73a011c34/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {
@@ -72,8 +72,6 @@ dependencies {
 }
 
 repositories {
-    mavenLocal()
-
     maven {
         name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/navikt/k9-format")

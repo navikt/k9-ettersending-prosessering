@@ -86,7 +86,7 @@ fun KafkaEnvironment.meldingEttersendingProducer() = KafkaProducer(
 
 fun KafkaConsumer<String, String>.hentCleanupMeldingEttersending(
     soknadId: String,
-    maxWaitInSeconds: Long = 20
+    maxWaitInSeconds: Long = 30
 ): String {
     val end = System.currentTimeMillis() + Duration.ofSeconds(maxWaitInSeconds).toMillis()
     while (System.currentTimeMillis() < end) {

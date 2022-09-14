@@ -1,8 +1,8 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-val dusseldorfKtorVersion = "3.2.0.2-b18c5fe"
-val k9FormatVersion = "6.0.0"
+val dusseldorfKtorVersion = "3.2.1.1-15e2e63"
+val k9FormatVersion = "6.1.5"
 val ktorVersion = ext.get("ktorVersion").toString()
 val slf4jVersion = ext.get("slf4jVersion").toString()
 val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
@@ -16,7 +16,7 @@ val fuelVersion = "2.3.1"
 val mainClass = "no.nav.helse.K9EttersendingProsesseringKt"
 
 plugins {
-    kotlin("jvm") version "1.7.0"
+    kotlin("jvm") version "1.7.10"
     id("com.github.johnrengelman.shadow") version "7.1.2"
 }
 
@@ -59,15 +59,13 @@ dependencies {
     // Test
     testImplementation ( "org.apache.kafka:kafka-clients:$kafkaVersion")
     testImplementation ( "no.nav:kafka-embedded-env:$kafkaEmbeddedEnvVersion") {
-        exclude("com.google.code.gson", "gson")
         exclude("org.glassfish", "jakarta.el")
     }
-    testImplementation("com.google.code.gson:gson:2.9.0")
     testImplementation ( "no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {
         exclude(group = "org.eclipse.jetty")
     }
-    testImplementation("org.skyscreamer:jsonassert:1.5.0")
+    testImplementation("org.skyscreamer:jsonassert:1.5.1")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }
 
@@ -110,7 +108,7 @@ tasks.withType<ShadowJar> {
 }
 
 tasks.withType<Wrapper> {
-    gradleVersion = "7.4.2"
+    gradleVersion = "7.5.1"
 }
 
 tasks.withType<Test> {

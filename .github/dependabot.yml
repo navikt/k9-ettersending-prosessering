@@ -26,3 +26,8 @@ updates:
     registries:
       - k9-format
       - dusseldorf-ktor
+
+  - package-ecosystem: docker
+    directory: "/"
+    schedule:
+        interval: daily

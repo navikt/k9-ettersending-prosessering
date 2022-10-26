@@ -7,7 +7,6 @@ val slf4jVersion = ext.get("slf4jVersion").toString()
 val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
 
 val k9FormatVersion = "7.0.4"
-val jakartaelVersion = "4.0.2"
 
 val openhtmltopdfVersion = "1.0.10"
 val kafkaEmbeddedEnvVersion = ext.get("kafkaEmbeddedEnvVersion").toString()
@@ -42,8 +41,6 @@ dependencies {
 
     // K9-format
     implementation("no.nav.k9:ettersendelse:$k9FormatVersion")
-    implementation("org.glassfish:jakarta.el:$jakartaelVersion") // Feiler i miljø uten EL.
-
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")
 

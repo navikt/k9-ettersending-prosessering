@@ -42,7 +42,7 @@ dependencies {
 
     // K9-format
     implementation("no.nav.k9:ettersendelse:$k9FormatVersion")
-    testImplementation("org.glassfish:jakarta.el:$jakartaelVersion") // Feiler i miljø uten EL.
+    implementation("org.glassfish:jakarta.el:$jakartaelVersion") // Feiler i miljø uten EL.
 
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")

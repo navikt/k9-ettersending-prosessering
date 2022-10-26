@@ -64,6 +64,8 @@ dependencies {
     testImplementation("org.apache.kafka:kafka-clients:$kafkaVersion")
     testImplementation("no.nav:kafka-embedded-env:$kafkaEmbeddedEnvVersion") {
         exclude("org.glassfish", "jakarta.el")
+        exclude("org.apache.kafka", "kafka-clients")
+        exclude("javax.el", "javax.el-api")
     }
     testImplementation("no.nav.helse:dusseldorf-test-support:$dusseldorfKtorVersion")
     testImplementation("io.ktor:ktor-server-test-host:$ktorVersion") {

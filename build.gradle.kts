@@ -2,10 +2,12 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 val dusseldorfKtorVersion = "3.2.1.2-93aa998"
-val k9FormatVersion = "7.0.4"
 val ktorVersion = ext.get("ktorVersion").toString()
 val slf4jVersion = ext.get("slf4jVersion").toString()
 val kotlinxCoroutinesVersion = ext.get("kotlinxCoroutinesVersion").toString()
+
+val k9FormatVersion = "7.0.4"
+val jakartaelVersion = "4.0.2"
 
 val openhtmltopdfVersion = "1.0.10"
 val kafkaEmbeddedEnvVersion = ext.get("kafkaEmbeddedEnvVersion").toString()
@@ -40,6 +42,8 @@ dependencies {
 
     // K9-format
     implementation("no.nav.k9:ettersendelse:$k9FormatVersion")
+    testImplementation("org.glassfish:jakarta.el:$jakartaelVersion") // Feiler i miljø uten EL.
+
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-slf4j:$kotlinxCoroutinesVersion")
 

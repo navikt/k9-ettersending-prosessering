@@ -9,13 +9,13 @@ import io.ktor.server.testing.*
 import io.prometheus.client.CollectorRegistry
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.time.delay
-import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.wiremock.WireMockBuilder
 import no.nav.helse.k9.assertCleanupEttersendeFormat
 import no.nav.helse.prosessering.v1.ettersending.Søknadstype
 import org.junit.jupiter.api.AfterAll
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.testcontainers.containers.KafkaContainer
 import java.time.Duration
 import java.util.concurrent.TimeUnit
 import kotlin.test.Test
@@ -45,20 +45,20 @@ class K9EttersendingProsesseringTest {
             start(wait = true)
         }
 
-        private fun getConfig(kafkaEnvironment: KafkaEnvironment?): ApplicationConfig {
+        private fun getConfig(kafkaContainer: KafkaContainer): ApplicationConfig {
             val fileConfig = ConfigFactory.load()
             val testConfig = ConfigFactory.parseMap(
                 TestConfiguration.asMap(
                     wireMockServer = wireMockServer,
-                    kafkaEnvironment = kafkaEnvironment
+                    kafkaEnvironment = kafkaContainer
                 )
             )
             val mergedConfig = testConfig.withFallback(fileConfig)
             return HoconApplicationConfig(mergedConfig)
         }
 
-        private fun newEngine(kafkaEnvironment: KafkaEnvironment?) = TestApplicationEngine(createTestEnvironment {
-            config = getConfig(kafkaEnvironment)
+        private fun newEngine(kafkaContainer: KafkaContainer) = TestApplicationEngine(createTestEnvironment {
+            config = getConfig(kafkaContainer)
         })
 
         private fun stopEngine() = engine.stop(5, 60, TimeUnit.SECONDS)
@@ -76,7 +76,7 @@ class K9EttersendingProsesseringTest {
             logger.info("Tearing down")
             wireMockServer.stop()
             stopEngine()
-            kafkaEnvironment.tearDown()
+            kafkaEnvironment.stop()
             logger.info("Tear down complete")
         }
     }

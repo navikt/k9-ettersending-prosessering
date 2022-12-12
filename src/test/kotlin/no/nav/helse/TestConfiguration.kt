@@ -2,16 +2,16 @@ package no.nav.helse
 
 import com.github.kittinunf.fuel.httpGet
 import com.github.tomakehurst.wiremock.WireMockServer
-import no.nav.common.KafkaEnvironment
 import no.nav.helse.dusseldorf.testsupport.jws.ClientCredentials
 import no.nav.helse.dusseldorf.testsupport.wiremock.getAzureV2WellKnownUrl
 import org.json.JSONObject
+import org.testcontainers.containers.KafkaContainer
 
 object TestConfiguration {
 
     fun asMap(
         wireMockServer: WireMockServer? = null,
-        kafkaEnvironment: KafkaEnvironment? = null,
+        kafkaEnvironment: KafkaContainer? = null,
         port : Int = 8080,
         tpsProxyBaseUrl : String? = wireMockServer?.getTpsProxyBaseUrl(),
         k9JoarkBaseUrl : String? = wireMockServer?.getk9JoarkBaseUrl(),
@@ -35,7 +35,7 @@ object TestConfiguration {
         }
 
         kafkaEnvironment?.let {
-            map["nav.kafka.bootstrap_servers"] = it.brokersURL
+            map["nav.kafka.bootstrap_servers"] = it.bootstrapServers
             map["nav.kafka.auto_offset_reset"] = "earliest"
         }
 

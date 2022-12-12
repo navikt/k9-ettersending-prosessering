@@ -6,7 +6,7 @@ val ktorVersion = "2.2.1"
 val slf4jVersion = "2.0.5"
 val kotlinxCoroutinesVersion = "1.6.4"
 
-val k9FormatVersion = "7.0.4"
+val k9FormatVersion = "8.0.0"
 
 val openhtmltopdfVersion = "1.0.10"
 val kafkaTestcontainerVersion = "1.17.6"
@@ -19,11 +19,6 @@ val mainClass = "no.nav.helse.K9EttersendingProsesseringKt"
 plugins {
     kotlin("jvm") version "1.7.22"
     id("com.github.johnrengelman.shadow") version "7.1.2"
-}
-
-buildscript {
-    // Henter ut diverse dependency versjoner, i.e. ktorVersion.
-    apply("https://raw.githubusercontent.com/navikt/dusseldorf-ktor/3bd7664b0352f77c0d6c124d1d03c57bc0284690/gradle/dusseldorf-ktor.gradle.kts")
 }
 
 dependencies {

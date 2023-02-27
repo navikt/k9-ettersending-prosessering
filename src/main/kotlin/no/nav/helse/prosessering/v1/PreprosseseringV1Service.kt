@@ -31,7 +31,7 @@ internal class PreprosseseringV1Service(
         val dokumentEier = DokumentEier(ettersending.søker.fødselsnummer)
 
         logger.info("Genererer Oppsummerings-PDF av ettersending.")
-        val oppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdfEttersending(ettersending)
+        val oppsummeringPdf = pdfV1Generator.generateSoknadOppsummeringPdfEttersending(ettersending, metadata)
 
         logger.info("Mellomlagrer Oppsummerings-PDF.")
         val oppsummeringPdfVedleggId = k9MellomlagringService.lagreDokument(

@@ -10,6 +10,7 @@ import com.openhtmltopdf.pdfboxout.PdfRendererBuilder
 import com.openhtmltopdf.util.XRLog
 import no.nav.helse.dusseldorf.ktor.core.fromResources
 import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
+import no.nav.helse.prosessering.v1.felles.Metadata
 import no.nav.helse.prosessering.v1.felles.Søker
 import no.nav.helse.prosessering.v1.felles.norskDag
 import java.io.ByteArrayInputStream
@@ -62,7 +63,8 @@ internal class PdfV1Generator {
     }
 
     internal fun generateSoknadOppsummeringPdfEttersending(
-        melding: EttersendingV1
+        melding: EttersendingV1,
+        metadata: Metadata
     ): ByteArray {
         XRLog.listRegisteredLoggers().forEach { logger -> XRLog.setLevel(logger, Level.WARNING) }
         soknadEttersendingTemplate.apply(
@@ -70,6 +72,7 @@ internal class PdfV1Generator {
                 .newBuilder(
                     mapOf(
                         "soknad_id" to melding.søknadId,
+                        "soknadDialogCommitSha" to metadata.soknadDialogCommitSha,
                         "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
                         "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
                         "søker" to mapOf(

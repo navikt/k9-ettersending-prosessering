@@ -105,7 +105,8 @@ fun KafkaProducer<String, TopicEntry>.leggTilMottak(soknad: EttersendingV1) {
             TopicEntry(
                 metadata = Metadata(
                     version = 1,
-                    correlationId = UUID.randomUUID().toString()
+                    correlationId = UUID.randomUUID().toString(),
+                    soknadDialogCommitSha = "abc-123"
                 ),
                 data = Data(k9EttersendingKonfigurertMapper().writeValueAsString(soknad))
             )

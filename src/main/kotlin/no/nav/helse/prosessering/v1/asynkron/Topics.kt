@@ -17,6 +17,7 @@ import org.apache.kafka.common.serialization.StringSerializer
 import org.apache.kafka.streams.kstream.Consumed
 import org.apache.kafka.streams.kstream.Produced
 import org.json.JSONObject
+import org.slf4j.LoggerFactory
 
 data class Data(val rawJson: String)
 data class CleanupEttersending(
@@ -71,7 +72,8 @@ data class TopicEntry(val rawJson: String) {
                 "metadata" to JSONObject(
                     mapOf(
                         "version" to metadata.version,
-                        "correlationId" to metadata.correlationId
+                        "correlationId" to metadata.correlationId,
+                        "soknadDialogCommitSha" to metadata.soknadDialogCommitSha
                     )
                 ),
                 "data" to JSONObject(data.rawJson)
@@ -84,8 +86,10 @@ data class TopicEntry(val rawJson: String) {
     private val dataJson = requireNotNull(entityJson.getJSONObject("data"))
     val metadata = Metadata(
         version = requireNotNull(metadataJson.getInt("version")),
-        correlationId = requireNotNull(metadataJson.getString("correlationId"))
+        correlationId = requireNotNull(metadataJson.getString("correlationId")),
+        soknadDialogCommitSha = metadataJson.optString("soknadDialogCommitSha")
     )
+
     val data = Data(dataJson.toString())
 }
 

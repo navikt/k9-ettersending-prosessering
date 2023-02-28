@@ -17,6 +17,7 @@ import org.apache.kafka.common.serialization.StringSerializer
 import org.apache.kafka.streams.kstream.Consumed
 import org.apache.kafka.streams.kstream.Produced
 import org.json.JSONObject
+import org.slf4j.LoggerFactory
 
 data class Data(val rawJson: String)
 data class CleanupEttersending(
@@ -58,7 +59,12 @@ internal fun Any.serialiserTilData() = Data(k9EttersendingKonfigurertMapper().wr
 class SerDes : Serializer<TopicEntry>, Deserializer<TopicEntry> {
     override fun configure(configs: MutableMap<String, *>?, isKey: Boolean) {}
     override fun close() {}
-    override fun deserialize(topic: String, entry: ByteArray): TopicEntry = TopicEntry(String(entry))
+    override fun deserialize(topic: String, entry: ByteArray): TopicEntry {
+        val t =  TopicEntry(String(entry))
+        val logger = LoggerFactory.getLogger(SerDes::class.java)
+        logger.info("DEBUG: metadata: {}", t.metadata)
+        return t
+    }
     override fun serialize(topic: String, entry: TopicEntry): ByteArray {
         return entry.rawJson.toByteArray()
     }

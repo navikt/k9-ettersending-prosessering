@@ -59,13 +59,7 @@ internal fun Any.serialiserTilData() = Data(k9EttersendingKonfigurertMapper().wr
 class SerDes : Serializer<TopicEntry>, Deserializer<TopicEntry> {
     override fun configure(configs: MutableMap<String, *>?, isKey: Boolean) {}
     override fun close() {}
-    override fun deserialize(topic: String, entry: ByteArray): TopicEntry {
-        val logger = LoggerFactory.getLogger(SerDes::class.java)
-        val t =  TopicEntry(String(entry))
-        logger.info("DEBUG: metadata: {}", t.metadataJson)
-        logger.info("DEBUG 2: metadata: {}", JSONObject(String(entry)).getJSONObject("metadata"))
-        return t
-    }
+    override fun deserialize(topic: String, entry: ByteArray): TopicEntry = TopicEntry(String(entry))
     override fun serialize(topic: String, entry: TopicEntry): ByteArray {
         return entry.rawJson.toByteArray()
     }
@@ -88,7 +82,7 @@ data class TopicEntry(val rawJson: String) {
     )
 
     private val entityJson = JSONObject(rawJson)
-    val metadataJson = requireNotNull(entityJson.getJSONObject("metadata"))
+    private val metadataJson = requireNotNull(entityJson.getJSONObject("metadata"))
     private val dataJson = requireNotNull(entityJson.getJSONObject("data"))
     val metadata = Metadata(
         version = requireNotNull(metadataJson.getInt("version")),

@@ -63,6 +63,7 @@ class SerDes : Serializer<TopicEntry>, Deserializer<TopicEntry> {
         val logger = LoggerFactory.getLogger(SerDes::class.java)
         val t =  TopicEntry(String(entry))
         logger.info("DEBUG: metadata: {}", t.metadataJson)
+        logger.info("DEBUG 2: metadata: {}", JSONObject(entry).getJSONObject("metadata"))
         return t
     }
     override fun serialize(topic: String, entry: TopicEntry): ByteArray {

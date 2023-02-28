@@ -13,6 +13,7 @@ import no.nav.helse.prosessering.v1.ettersending.EttersendingV1
 import no.nav.helse.prosessering.v1.felles.Metadata
 import no.nav.helse.prosessering.v1.felles.Søker
 import no.nav.helse.prosessering.v1.felles.norskDag
+import org.slf4j.LoggerFactory
 import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.time.ZoneId
@@ -67,12 +68,15 @@ internal class PdfV1Generator {
         metadata: Metadata
     ): ByteArray {
         XRLog.listRegisteredLoggers().forEach { logger -> XRLog.setLevel(logger, Level.WARNING) }
+        val soknadDialogCommitSha = metadata.soknadDialogCommitSha
+        val logger = LoggerFactory.getLogger(PdfV1Generator::class.java)
+        logger.info("Commit SHA = $soknadDialogCommitSha")
         soknadEttersendingTemplate.apply(
             Context
                 .newBuilder(
                     mapOf(
                         "soknad_id" to melding.søknadId,
-                        "soknadDialogCommitSha" to metadata.soknadDialogCommitSha,
+                        "soknadDialogCommitSha" to soknadDialogCommitSha,
                         "soknad_mottatt_dag" to melding.mottatt.withZoneSameInstant(ZONE_ID).norskDag(),
                         "soknad_mottatt" to DATE_TIME_FORMATTER.format(melding.mottatt),
                         "søker" to mapOf(

@@ -60,9 +60,9 @@ class SerDes : Serializer<TopicEntry>, Deserializer<TopicEntry> {
     override fun configure(configs: MutableMap<String, *>?, isKey: Boolean) {}
     override fun close() {}
     override fun deserialize(topic: String, entry: ByteArray): TopicEntry {
-        val t =  TopicEntry(String(entry))
         val logger = LoggerFactory.getLogger(SerDes::class.java)
-        logger.info("DEBUG: metadata: {}", t.metadata)
+        val t =  TopicEntry(String(entry))
+        logger.info("DEBUG: metadata: {}", t.metadataJson)
         return t
     }
     override fun serialize(topic: String, entry: TopicEntry): ByteArray {
@@ -71,7 +71,6 @@ class SerDes : Serializer<TopicEntry>, Deserializer<TopicEntry> {
 }
 
 data class TopicEntry(val rawJson: String) {
-    private val logger = LoggerFactory.getLogger(TopicEntry::class.java)
     constructor(metadata: Metadata, data: Data) : this(
         JSONObject(
             mapOf(
@@ -88,7 +87,7 @@ data class TopicEntry(val rawJson: String) {
     )
 
     private val entityJson = JSONObject(rawJson)
-    private val metadataJson = requireNotNull(entityJson.getJSONObject("metadata"))
+    val metadataJson = requireNotNull(entityJson.getJSONObject("metadata"))
     private val dataJson = requireNotNull(entityJson.getJSONObject("data"))
     val metadata = Metadata(
         version = requireNotNull(metadataJson.getInt("version")),

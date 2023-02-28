@@ -4,6 +4,7 @@ import io.prometheus.client.Counter
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.slf4j.MDCContext
 import no.nav.helse.dusseldorf.ktor.core.Retry
+import org.slf4j.LoggerFactory
 import java.time.Duration
 
 private object StreamCounter {
@@ -23,6 +24,7 @@ internal fun process(
     entry: TopicEntry,
     block: suspend () -> Data
 ): TopicEntry {
+    val logger = LoggerFactory.getLogger("process")
     return runBlocking(
         MDCContext(
             mapOf(
@@ -42,6 +44,7 @@ internal fun process(
             throw cause
         }
         StreamCounter.ok(name)
+        logger.info("DEBUG metadata: {}", entry.metadata)
         TopicEntry(
             metadata = entry.metadata,
             data = processed

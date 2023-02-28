@@ -71,6 +71,7 @@ class SerDes : Serializer<TopicEntry>, Deserializer<TopicEntry> {
 }
 
 data class TopicEntry(val rawJson: String) {
+    private val logger = LoggerFactory.getLogger(TopicEntry::class.java)
     constructor(metadata: Metadata, data: Data) : this(
         JSONObject(
             mapOf(
@@ -94,6 +95,7 @@ data class TopicEntry(val rawJson: String) {
         correlationId = requireNotNull(metadataJson.getString("correlationId")),
         soknadDialogCommitSha = metadataJson.optString("soknadDialogCommitSha")
     )
+
     val data = Data(dataJson.toString())
 }
 
